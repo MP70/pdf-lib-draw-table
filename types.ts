@@ -21,13 +21,13 @@ export type ColumnWidthDistOptions = {
 };
 
 export interface CustomStyledText {
-    type: "text";
-    text: string;
-    alignment?: Alignment;
-    font?: PDFFont;
-    fontSize?: number;
-    fontColor?: Color;
-  }
+  type: "text";
+  text: string;
+  alignment?: Alignment;
+  font?: PDFFont;
+  fontSize?: number;
+  fontColor?: Color;
+}
 export interface Link {
   type: "link";
   url: string;
@@ -45,7 +45,7 @@ export interface Image {
   alignment?: Alignment;
   horizontalMargin?: number;
 }
-export type CellElement = string | Link | Image | CustomStyledText ;
+export type CellElement = string | Link | Image | CustomStyledText;
 export type CellContent = CellElement | Array<CellElement>;
 
 // Basic options for the table, including font, colors, and alignment
@@ -63,9 +63,9 @@ interface BasicTableOptions {
   tableTitleAlignment?: Alignment; // Alignment for the table title
   bottomPageMargin?: number; // Margin between the table and the bottom of the page
   rightPageMargin?: number; // Margin between the table and the right side of the page
-  linkColor? : Color; // Default Color for links
+  linkColor?: Color; // Default Color for links
   lineHeight?: number; // How much higher should lines be than the text? e.g 1.2 would be a 10% padding to both top and bottom.
-  horizontalTextMargin?: number // Number of points that we sould leave as a margin between the cell boundry and text both left and right 1-3 points is probably sensible in most cases.
+  horizontalTextMargin?: number; // Number of points that we sould leave as a margin between the cell boundry and text both left and right 1-3 points is probably sensible in most cases.
 }
 
 // Options related to column widths

@@ -1,5 +1,11 @@
 import { isCustomStyledText, isImage, isLink, wrapText } from "./util";
-import { Link, Image, CellElement, CellContent, CustomStyledText } from "../types";
+import {
+  Link,
+  Image,
+  CellElement,
+  CellContent,
+  CustomStyledText,
+} from "../types";
 import { PDFFont } from "pdf-lib";
 
 // Calculate the total height of a table, including the table title
@@ -62,17 +68,29 @@ export async function calcRowHeight(
           // Calculate the max line height for the array of CellElements
           return Math.max(
             ...content.map((innerContent: CellElement) =>
-              getContentWrappedLineHeight(innerContent, maxWidth, defaultFont, defaultFontSize)
+              getContentWrappedLineHeight(
+                innerContent,
+                maxWidth,
+                defaultFont,
+                defaultFontSize
+              )
             )
           );
         } else if (isLink(content) || isCustomStyledText(content)) {
           // Calculate the line height for a link or custom-styled text
           const contentFont = content.font || defaultFont;
           const contentFontSize = content.fontSize || defaultFontSize;
-          return wrapText(content.text, maxWidth, contentFont, contentFontSize).length * (contentFontSize * lineHeight);
+          return (
+            wrapText(content.text, maxWidth, contentFont, contentFontSize)
+              .length *
+            (contentFontSize * lineHeight)
+          );
         } else if (typeof content === "string") {
           // Calculate the line height for a plain text string
-          return wrapText(content, maxWidth, defaultFont, defaultFontSize).length * (defaultFontSize * lineHeight);
+          return (
+            wrapText(content, maxWidth, defaultFont, defaultFontSize).length *
+            (defaultFontSize * lineHeight)
+          );
         } else if (isImage(content)) {
           // Return the height of an image plus a small margin
           return content.height + 2;
@@ -93,5 +111,3 @@ export async function calcRowHeight(
   // Return the height of the row
   return maxHeight;
 }
-
-

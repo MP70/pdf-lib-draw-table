@@ -25,13 +25,9 @@ async function fetchImage(src: string): Promise<Uint8Array> {
 
     const buffer = await response.arrayBuffer();
     return new Uint8Array(buffer);
-  } catch (error : any) {
+  } catch (error: any) {
     throw new Error(`Error fetching image from ${src}: ${error.message}`);
   }
 }
 
-
-
-export {
-  fetchImage,
-};
+export { fetchImage };

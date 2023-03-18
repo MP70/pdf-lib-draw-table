@@ -6,17 +6,12 @@ import {
   rgb,
   Color,
 } from "pdf-lib";
-import {
-  drawBorder,
-} from "./helpers/util";
-import {
-  generateUniqueMCID,
-  beginMarkedContent
-} from "./helpers/markContent";
+import { drawBorder } from "./helpers/util";
+import { generateUniqueMCID, beginMarkedContent } from "./helpers/markContent";
 import { distributeColumnWidths } from "./helpers/columnWidths";
 import { drawElement } from "./helpers/drawContent";
 import { CellContent, DrawTableOptions, TableDimensions } from "./types";
-import {calcTableHeight,calcRowHeight} from './helpers/tableHeights'
+import { calcTableHeight, calcRowHeight } from "./helpers/tableHeights";
 class DrawTableError extends Error {
   code: string;
   constructor(code: string, message: string) {
@@ -74,7 +69,7 @@ export async function drawTable(
     headerBackgroundColor = hasHeaderRow
       ? options?.headerBackgroundColor ?? rgb(0.9, 0.9, 0.9)
       : undefined,
-      headerFontSize = hasHeaderRow
+    headerFontSize = hasHeaderRow
       ? options?.headerFontSize ?? fontSize
       : undefined,
     tableTitle = undefined,
@@ -84,15 +79,15 @@ export async function drawTable(
     tableTitleAlignment = "center",
     bottomPageMargin = 5,
     rightPageMargin = 5,
-    linkColor = rgb(0, 0, 1) ,
-            lineHeight = 1.1,
-            horizontalTextMargin = 1,
+    linkColor = rgb(0, 0, 1),
+    lineHeight = 1.1,
+    horizontalTextMargin = 1,
   } = options ?? ({} as DrawTableOptions);
 
   // Check for column count consistency
   if (
     overrideColumnWidths.length > 0 &&
-    (overrideColumnWidths.length !== tableData[0].length)
+    overrideColumnWidths.length !== tableData[0].length
   ) {
     throw new DrawTableError(
       "ERR_COLUMN_COUNT_MISMATCH",
@@ -150,7 +145,7 @@ export async function drawTable(
     tableTitle,
     tableTitleFontSize
   );
-  
+
   //Check we are safe to continue on (or if the consumer needs to give us more x/y space or a new page).
   // Check for table width overflow
   if (tableWidth > availableWidth) {
@@ -199,14 +194,15 @@ export async function drawTable(
   for (let rowIndex = 0; rowIndex < tableData.length; rowIndex++) {
     const rowData = tableData[rowIndex];
 
-    const rowHeight = overrideRowHeights[rowIndex] || await calcRowHeight(
-      rowData,
-      columnWidths,
-      rowIndex === 0 && hasHeaderRow ? headerFont! : font,
-      rowIndex === 0 && hasHeaderRow ? headerFontSize! : fontSize,
-      lineHeight
-    );
-    
+    const rowHeight =
+      overrideRowHeights[rowIndex] ||
+      (await calcRowHeight(
+        rowData,
+        columnWidths,
+        rowIndex === 0 && hasHeaderRow ? headerFont! : font,
+        rowIndex === 0 && hasHeaderRow ? headerFontSize! : fontSize,
+        lineHeight
+      ));
 
     const isHeader = rowIndex === 0 && hasHeaderRow;
     let cellX = currentX;
@@ -236,7 +232,7 @@ export async function drawTable(
         const cellFontSize = isHeader ? headerFontSize : fontSize;
         // Determine alignment based on whether the cell is a header or not
         const alignment = isHeader ? headerTextAlignment : cellTextAlignment;
-    
+
         // Draw cell background for header row
         if (isHeader) {
           page.drawRectangle({
@@ -249,7 +245,7 @@ export async function drawTable(
             borderColor: borderColor,
           });
         }
-    
+
         // Draw cell borders only if there is a positive border width, otherwise, we achieve borderless tables
         if (borderWidth > 0) {
           // Draw top border of the cell if there is no header and it's the first row
@@ -264,7 +260,7 @@ export async function drawTable(
               borderColor
             );
           }
-    
+
           // Draw left border of cell
           drawBorder(
             page,
@@ -275,7 +271,7 @@ export async function drawTable(
             borderWidth,
             borderColor
           );
-    
+
           // Draw right border of the cell if it's the last column
           if (colIndex === rowData.length - 1) {
             drawBorder(
@@ -288,7 +284,7 @@ export async function drawTable(
               borderColor
             );
           }
-    
+
           // Draw bottom border of cell
           drawBorder(
             page,
@@ -300,7 +296,7 @@ export async function drawTable(
             borderColor
           );
         }
-    
+
         // Draw cell text
         if (Array.isArray(cellContent)) {
           let mixedContentY = cellY;
@@ -337,16 +333,18 @@ export async function drawTable(
             horizontalTextMargin
           );
         }
-    
+
         cellX += columnWidth;
       }
-    
+
       currentY -= rowHeight;
-    } catch (error:any) {
-      throw new DrawTableError("DRAW_TABLE_ERROR", `Failed to draw the table: ${error.message}`);
+    } catch (error: any) {
+      throw new DrawTableError(
+        "DRAW_TABLE_ERROR",
+        `Failed to draw the table: ${error.message}`
+      );
     }
-    
-}
+  }
   // Return table dimensions and end x/y. Useful for consumer if they are writing other content to the PDF page after this.
   return {
     endX: startX + tableWidth,
@@ -354,5 +352,4 @@ export async function drawTable(
     width: tableWidth,
     height: tableHeight,
   };
-
 }

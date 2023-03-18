@@ -1,4 +1,9 @@
-import { CellContent, ColumnWidthDistOptions, CustomStyledText, Link } from "../types";
+import {
+  CellContent,
+  ColumnWidthDistOptions,
+  CustomStyledText,
+  Link,
+} from "../types";
 import { PDFFont } from "pdf-lib";
 import { Image, CellElement } from "../types";
 import { isImage, isLink } from "./util";
@@ -8,8 +13,14 @@ function getContentWidth(
   font: PDFFont,
   fontSize: number
 ): number {
-  if (typeof content === "string" || (content as CustomStyledText).type === "text") {
-    const elem = (content as CustomStyledText).type === "text" ? (content as CustomStyledText) : { text: content } as CustomStyledText;
+  if (
+    typeof content === "string" ||
+    (content as CustomStyledText).type === "text"
+  ) {
+    const elem =
+      (content as CustomStyledText).type === "text"
+        ? (content as CustomStyledText)
+        : ({ text: content } as CustomStyledText);
     const usedFont = elem.font || font;
     const usedFontSize = elem.fontSize || fontSize;
     return usedFont.widthOfTextAtSize(elem.text, usedFontSize);
@@ -23,8 +34,6 @@ function getContentWidth(
     throw new Error("Unsupported cell content type");
   }
 }
-
-
 
 export function distributeColumnWidths(
   options: ColumnWidthDistOptions
@@ -50,7 +59,7 @@ export function distributeColumnWidths(
   if (mode === "equal") {
     const equalWidth = adjustedWidth / columnCount;
     return Array(columnCount).fill(equalWidth);
-  } 
+  }
   // WrapHeader mode: Adjust column widths based on header content width
   else if (mode === "wrapHeader") {
     if (!hasHeader) {
@@ -68,12 +77,13 @@ export function distributeColumnWidths(
         throw new Error("Header content cell should not be an array");
       }
       const headerWidth =
-        getContentWidth(headerContent, headerFont!, headerFontSize!) + wrapMargin;
+        getContentWidth(headerContent, headerFont!, headerFontSize!) +
+        wrapMargin;
       return headerWidth;
     });
 
     return headerWidths;
-  } 
+  }
   // Intelligent mode: Calculate column widths based on content widths
   else if (mode === "intelligent") {
     const rowCount = tableData.length;

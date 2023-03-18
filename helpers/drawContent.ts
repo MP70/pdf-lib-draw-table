@@ -19,7 +19,10 @@ export async function drawElement(
 ): Promise<number> {
   try {
     if (typeof element === "string" || element.type === "text") {
-      const elem = (typeof element === 'object' && element.type === "text") ? element : { text: element } as CustomStyledText;
+      const elem =
+        typeof element === "object" && element.type === "text"
+          ? element
+          : ({ text: element } as CustomStyledText);
       const wrappedText = wrapText(
         elem.text,
         width - 2 * horizontalTextMargin,
@@ -27,7 +30,9 @@ export async function drawElement(
         elem.fontSize || fontSize
       );
       let textY = y - (elem.fontSize || fontSize);
-      const lineSpacing = (elem.font || font).heightAtSize(elem.fontSize || fontSize) * lineHeight;
+      const lineSpacing =
+        (elem.font || font).heightAtSize(elem.fontSize || fontSize) *
+        lineHeight;
 
       for (const line of wrappedText) {
         const { x: textX, y: textYCoord } = getTextCoordinates(
@@ -51,7 +56,8 @@ export async function drawElement(
       const imageData = await fetchImage(element.src);
       const image = await page.doc.embedPng(imageData);
       const scaleFactor = Math.min(
-        (width - 2 * (element.horizontalMargin || horizontalTextMargin)) / element.width,
+        (width - 2 * (element.horizontalMargin || horizontalTextMargin)) /
+          element.width,
         element.height / element.height
       );
       const imgWidth = element.width * scaleFactor;
@@ -83,11 +89,18 @@ export async function drawElement(
         element.fontSize || fontSize
       );
       let offsetY = element.fontSize || fontSize;
-      const lineSpacing = (element.font || font).heightAtSize(element.fontSize || fontSize) * lineHeight;
+      const lineSpacing =
+        (element.font || font).heightAtSize(element.fontSize || fontSize) *
+        lineHeight;
 
       wrappedText.forEach((line) => {
-        const width = (element.font || font).widthOfTextAtSize(line, element.fontSize || fontSize);
-        const height = (element.font || font).heightAtSize(element.fontSize || fontSize);
+        const width = (element.font || font).widthOfTextAtSize(
+          line,
+          element.fontSize || fontSize
+        );
+        const height = (element.font || font).heightAtSize(
+          element.fontSize || fontSize
+        );
 
         const { x: textX, y: textYCoord } = getTextCoordinates(
           element.alignment || alignment,
@@ -128,7 +141,6 @@ export async function drawElement(
     }
   } catch (error) {
     console.error("Error drawing element:", error);
-   
-  } 
+  }
   return 0;
 }

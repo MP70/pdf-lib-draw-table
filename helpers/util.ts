@@ -1,10 +1,4 @@
-import {
-  PDFFont,
- 
-  Color,
-  PDFPage,
-
-} from "pdf-lib";
+import { PDFFont, Color, PDFPage } from "pdf-lib";
 import { Link, Image, Alignment } from "../types";
 
 export function isImage(content: any): content is Image {
