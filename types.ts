@@ -6,120 +6,156 @@ import {
   rgb,
   Color,
 } from "pdf-lib";
+
+// Alignment options for text elements
 export type Alignment = "left" | "center" | "right";
-export type ColumnWidthDistOptions = {
-  mode: "equal" | "intelligent" | "wrapHeader";
-  availableWidth: number;
-  tableData: CellContent[][];
-  font: PDFFont;
-  headerFont?: PDFFont;
-  headerFontSize?: number;
-  fontSize: number;
-  borderWidth: number;
-  wrapMargin: number;
-  hasHeader: boolean;
+
+// Options for distributing column widths in the table
+export type GenColumnWidthOptions = {
+  columnWidthMode: "equal" | "auto" | "wrapHeader"; // Mode for calculating column widths
+  availableWidth: number; // Total width available for the table
+  tableData: CellContent[][]; // Data for the table cells
+  font: PDFFont; // Font for table cells
+  headerFont?: PDFFont; // Font for the header row (optional)
+  headerTextSize?: number; // Font size for the header row (optional)
+  textSize: number; // Font size for table cells
+  borderWidth: number; // Width of the table borders
+  horizontalMargin: number; // Margin for wrapping text within cells
+  headerHorizontalMargin: number;
+  hasHeader: boolean; // If true, the first row is treated as a header row
 };
 
+// Custom styled text with optional font, size, color, and alignment
 export interface CustomStyledText {
   type: "text";
   text: string;
   alignment?: Alignment;
   font?: PDFFont;
-  fontSize?: number;
-  fontColor?: Color;
+  textSize?: number;
+  textColor?: Color;
 }
-export interface Link {
+
+// Base interface for link elements with optional font, size, color, and alignment
+export interface LinkBase {
   type: "link";
-  url: string;
+  url?: string;
+  page?: number;
   text: string;
   alignment?: Alignment;
   font?: PDFFont;
-  fontSize?: number;
-  fontColor?: Color;
+  textSize?: number;
+  textColor?: Color;
 }
-export interface Image {
+
+// Enforcing either a 'url' or a 'page' property but not both
+export type Link = LinkBase & ({ url: string } | { page: number });
+
+// Base interface for image elements with optional alignment and horizontal margin
+export interface ImageBase {
   type: "image";
-  src: string;
+  src?: string;
+  data?: Uint8Array;
   width: number;
   height: number;
   alignment?: Alignment;
   horizontalMargin?: number;
 }
+
+// Enforcing either a 'src' or a 'data' property but not both
+export type Image = ImageBase & ({ src: string } | { data: Uint8Array });
+
+// Defining a type for cell elements, which can be a string, Link, Image, or CustomStyledText
 export type CellElement = string | Link | Image | CustomStyledText;
+
+// Defining a type for cell content, which can be a CellElement or an array of CellElements
 export type CellContent = CellElement | Array<CellElement>;
 
+export interface TableObject {
+  rows: {
+    [key: string]: CellElement[] | undefined;
+  }[];
+  columns: {
+    title: string;
+    key: string;
+  }[];
+}
+
+export interface TableDataConverterValidatorInput {
+  data: CellContent[][] | TableObject;
+  hasHeader: boolean;
+  fillEmpty?: boolean;
+}
+
 // Basic options for the table, including font, colors, and alignment
-interface BasicTableOptions {
-  fontSize: number; // Font size for the table text
-  font?: PDFFont; // Font for the table text
-  textColor?: Color; // Color for the table text
-  cellTextAlignment?: Alignment; // alignment tab text
-  borderColor?: Color; // Color for the table borders
-  borderWidth?: number; // Width of the table borders
-  tableTitle?: string; // Title text to display above the table
-  tableTitleFontSize?: number; // Font size for the table title
-  tableTitleFont?: PDFFont; // Font for the table title
-  tableTitleColor?: Color; // Color for the table title
-  tableTitleAlignment?: Alignment; // Alignment for the table title
-  bottomPageMargin?: number; // Margin between the table and the bottom of the page
-  rightPageMargin?: number; // Margin between the table and the right side of the page
-  linkColor?: Color; // Default Color for links
-  lineHeight?: number; // How much higher should lines be than the text? e.g 1.2 would be a 10% padding to both top and bottom.
-  horizontalTextMargin?: number; // Number of points that we sould leave as a margin between the cell boundry and text both left and right 1-3 points is probably sensible in most cases.
+export interface BasicTableOptions {
+  textSize: number; // Font size for the table text
+  textColor: Color; // Color for the table text
+  contentAlignment: Alignment; // Alignment for the table text
+  font: PDFFont; // Font for the table text
+  linkColor: Color; // Default color for links
+  lineHeight: number; // Line height for table rows
+  column: ColumnOptions; // Options for table columns
+  row: RowOptions; // Options for table rows
+  header: HeaderOptions; // Options for the header row
+  title: TitleOptions; // Options for the table title
+  border: BorderOptions; // Options for the table borders
+  pageMargin: PageMarginOptions; // Options for the page margins
+  contentMargin: ContentMarginOptions; // Options for the content margins
+  fillUndefCells: boolean;
+}
+
+// Header row options
+export interface HeaderOptions {
+  hasHeaderRow: boolean; // If true, the first row will be treated as a header row and styled accordingly
+  font: PDFFont; // Font for the header row
+  textSize: number; // Font size for the header row
+  textColor: Color; // Text color for the header row
+  backgroundColor: Color; // Background color for the header row
+  contentAlignment: Alignment; // Alignment for header row content
 }
 
 // Options related to column widths
-export type ColumnWidthOptions =
-  | {
-      overrideColumnWidths?: undefined;
-      columnWidthMode: "inteligent";
-    }
-  | {
-      overrideColumnWidths?: undefined;
-      columnWidthMode: "equal";
-    }
-  | {
-      overrideColumnWidths?: undefined;
-      columnWidthMode: "wrapHeader";
-    }
-  | {
-      overrideColumnWidths: number[];
-      columnWidthMode?: undefined;
-    };
+export type ColumnOptions = {
+  widthMode: "equal" | "auto" | "wrapHeader"; // Column width mode
+  overrideWidths: number[]; // If provided, these widths will be used for each column
+};
 
 // Options related to row heights
-export interface RowHeightOptions {
-  overrideRowHeights?: number[]; // If provided, these heights will be used for each row
+export interface RowOptions {
+  overrideHeights: number[]; // If provided, these heights will be used for each row
 }
 
-// Options related to header row styling
-export type HeaderRowOptions =
-  | {
-      hasHeaderRow: true; // If true, the first row will be treated as a header row and styled accordingly
-      headerFont?: PDFFont; // Font for the header row
-      headerFontSize?: number; // Font size for the header row
-      headerBackgroundColor?: Color; // Background color for the header row
-      headerTextAlignment?: Alignment; // alignment tab text
-      headerTextColor?: Color; // alignment tab text
-    }
-  | {
-      hasHeaderRow?: false; // If false or undefined, there will be no header row
-      headerFont?: undefined; // Not allowed when hasHeaderRow is false or undefined
-      headerFontSize?: undefined; // Font size for the header row
-      headerBackgroundColor?: undefined; // Not allowed when hasHeaderRow is false or undefined
-      headerTextAlignment?: undefined; // alignment tab text
-      headerTextColor?: undefined; // alignment tab text
-    };
+// Options for the table title
+export interface TitleOptions {
+  text: string; // Text for the title (optional)
+  textSize: number; // Font size for the title (optional)
+  font: PDFFont; // Font for the title (optional)
+  textColor: Color; // Text color for the title (optional)
+  alignment: Alignment; // Alignment for the title (optional)
+}
 
-// Combine all option types into a single DrawTableOptions type using intersection types
-export type DrawTableOptions = BasicTableOptions &
-  ColumnWidthOptions &
-  RowHeightOptions &
-  HeaderRowOptions;
+// Options for the table borders
+export interface BorderOptions {
+  color: Color; // Color for the table borders (optional)
+  width: number; // Width for the table borders (optional)
+}
 
+// Options for the page margins
+export interface PageMarginOptions {
+  bottom: number; // Bottom page margin (optional)
+  right: number; // Right page margin (optional)
+}
+
+// Options for the content margins
+export interface ContentMarginOptions {
+  horizontal: number; // Horizontal content margin (optional)
+  vertical: number; // Vertical content margin (optional)
+}
+export type DrawTableOptions = BasicTableOptions;
+// Dimensions of the table
 export interface TableDimensions {
-  endX: number;
-  endY: number;
-  width: number;
-  height: number;
+  endX: number; // X-coordinate of the table's bottom-right corner
+  endY: number; // Y-coordinate of the table's bottom-right corner
+  width: number; // Width of the table
+  height: number; // Height of the table
 }

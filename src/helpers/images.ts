@@ -1,5 +1,3 @@
-// Other imports and functions...
-
 // This function uses fetch to load images for both browser and Node.js support from 17.5 onwards (we're going to set > that as a min version level.).
 // or you can always just:
 // import fetch from 'node-fetch';

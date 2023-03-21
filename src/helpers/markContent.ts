@@ -23,7 +23,7 @@ export async function beginMarkedContent(
 
 // This async function returns a string that should be used in the PDF content stream to end the marked content section.
 export async function endMarkedContent(): Promise<string> {
-  // Pretty sure this is legit all we need.
+  // Pretty sure this is all we need.
   return "EMC\nQ";
 }
 

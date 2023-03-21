@@ -1,0 +1,85 @@
+import { generateColumnWidths } from '../src/helpers/columnWidths';
+import { DrawTableError } from '../src/drawPDFTable';
+import { CellContent } from '../types';
+
+// Mock the PDFFont object
+const PDFFontMock = {
+  widthOfTextAtSize: (text: string, size: number) => {
+    return text.length * size;
+  },
+};
+
+
+describe('generateColumnWidths', () => {
+  const font =  PDFFontMock;
+  const textSize = 10;
+  const headerFont = PDFFontMock;
+  const headerTextSize = 10;
+  const borderWidth = 1;
+  const horizontalMargin = 5;
+  const headerHorizontalMargin = 10;
+  const hasHeader = true;
+
+  const tableData: CellContent[][] = [
+    ['Header 1', 'Header 2', 'Header 3'],
+    ['Cell 1,1', 'Cell 1,2', 'Cell 1,3'],
+    ['Cell 2,1', 'Cell 2,2', 'Cell 2,3'],
+    ['Cell 3,1', 'Cell 3,2', 'Cell 3,3'],
+    ['Cell 1,1', 'Cell 1,2', 'Cell 1,3'],
+    ['Cell 2,1', 'Cell 2,2', 'Cell 2,3'],
+    ['Cell 3,1', 'Cell 3,2', 'Cell 3,3'],
+  ];
+
+  const options = {
+    columnWidthMode: 'auto',
+    availableWidth: 300,
+    tableData,
+    font,
+    textSize,
+    headerFont,
+    headerTextSize,
+    borderWidth,
+    horizontalMargin,
+    headerHorizontalMargin,
+    hasHeader,
+  };
+
+  it('distributes column widths equally', () => {
+    const result = generateColumnWidths({ ...options, columnWidthMode: 'equal' });
+    expect(result).toEqual([100, 100, 100]);
+  });
+
+  it('distributes column widths based on header content', () => {
+    const result = generateColumnWidths({ ...options, columnWidthMode: 'wrapHeader' });
+    expect(result).toEqual([82, 82, 82]);
+  });
+
+  it('distributes column widths based on cell content', () => {
+    const result = generateColumnWidths({ ...options, columnWidthMode: 'auto' });
+    expect(result).toEqual([104, 104, 104]);
+  });
+
+  it('throws an error for an invalid distribute mode', () => {
+    expect(() =>
+      generateColumnWidths({ ...options, columnWidthMode: 'invalid-mode' })
+    ).toThrow('Invalid distribute mode. Choose "auto", "wrapHeader" or "equal".');
+  });
+
+  it('throws an error when wrapHeader is used with no header', () => {
+    expect(() =>
+      generateColumnWidths({ ...options, columnWidthMode: 'wrapHeader', hasHeader: false })
+    ).toThrow(DrawTableError);
+  });
+
+  it('throws an error when there is not enough space for headers', () => {
+    const data = Array.from({ length: 10 }, () => ['Long cell content']);
+    const options = {
+      columnWidthMode: 'auto',
+      availableWidth: 200,
+      tableData: data,
+      font,
+      textSize,
+      headerFont,
+      headerTextSize,
+      borderWidth,
+     
