@@ -1,10 +1,9 @@
 # pdf-lib-draw-table
 
-[![Code Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://mp70.github.io/pdf-lib-draw-table)
-[![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://mp70.github.io/pdf-lib-draw-table)
+[![codecov](https://codecov.io/gh/MP70/pdf-lib-draw-table/branch/main/graph/badge.svg?token=BMJ2WXX5EV)](https://codecov.io/gh/MP70/pdf-lib-draw-table)[![Tests](https://github.com/MP70/pdf-lib-draw-table/actions/workflows/runTests.yml/badge.svg)](https://github.com/MP70/pdf-lib-draw-table/actions/workflows/runTests.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-%5E5.0.2-blue)](https://mp70.github.io/pdf-lib-draw-table)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue)](https://mp70.github.io/pdf-lib-draw-table)
-
+https://codecov.io/gh/MP70/pdf-lib-draw-table/branch/main/graphs/tree.svg?token=BMJ2WXX5EV
 A library for drawing tables in PDFs using pdf-lib.
 
 **Table of Contents**
