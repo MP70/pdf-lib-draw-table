@@ -18,8 +18,8 @@ export type GenColumnWidthOptions = {
   columnWidthMode: "equal" | "auto" | "wrapHeader"; // Mode for calculating column widths
   availableWidth: number; // Total width available for the table
   tableData: CellContent[][]; // Data for the table cells
-  font:  PDFFont; //  PDFFont for table cells
-  headerFont?:  PDFFont; //  PDFFont for the header row (optional)
+  font: PDFFont; //  PDFFont for table cells
+  headerFont?: PDFFont; //  PDFFont for the header row (optional)
   headerTextSize?: number; //  PDFFont size for the header row (optional)
   textSize: number; //  PDFFont size for table cells
   borderWidth: number; // Width of the table borders
@@ -33,7 +33,7 @@ export interface CustomStyledText {
   type: "text";
   text: string;
   alignment?: Alignment;
-  font?:  PDFFont;
+  font?: PDFFont;
   textSize?: number;
   textColor?: Color;
 }
@@ -45,7 +45,7 @@ export interface LinkBase {
   page?: number;
   text: string;
   alignment?: Alignment;
-  font?:  PDFFont;
+  font?: PDFFont;
   textSize?: number;
   textColor?: Color;
 }
@@ -93,7 +93,7 @@ export interface TableDataConverterValidatorInput {
  * *SPECIAL* DeepPartial type
  *
  * This utility type creates a deep partial version of an existing type, T.
- * It recursively makes all properties of T and its nested objects optional. It also does the same for specifiedFunctions 
+ * It recursively makes all properties of T and its nested objects optional. It also does the same for specifiedFunctions
  */
 
 export type TableOptionsDeepPartial<T> = {
@@ -101,7 +101,7 @@ export type TableOptionsDeepPartial<T> = {
     ? T[K] | undefined
     : T[K] extends Color
     ? T[K] | undefined
-    : T[K] extends  PDFFont
+    : T[K] extends PDFFont
     ? T[K] | undefined
     : T[K] extends object
     ? TableOptionsDeepPartial<T[K]>
@@ -113,7 +113,7 @@ export interface DrawTableOptions {
   textSize: number; //  PDFFont size for the table text
   textColor: Color; // Color for the table text
   contentAlignment: Alignment; // Alignment for the table text
-  font:  PDFFont; //  PDFFont for the table text
+  font: PDFFont; //  PDFFont for the table text
   linkColor: Color; // Default color for links
   lineHeight: number; // Line height for table rows
   column: ColumnOptions; // Options for table columns
@@ -129,7 +129,7 @@ export interface DrawTableOptions {
 // Header row options
 export interface HeaderOptions {
   hasHeaderRow: boolean; // If true, the first row will be treated as a header row and styled accordingly
-  font:  PDFFont; //  PDFFont for the header row
+  font: PDFFont; //  PDFFont for the header row
   textSize: number; //  PDFFont size for the header row
   textColor: Color; // Text color for the header row
   backgroundColor: Color; // Background color for the header row
@@ -151,7 +151,7 @@ export interface RowOptions {
 export interface TitleOptions {
   text: string; // Text for the title (optional)
   textSize: number; //  PDFFont size for the title (optional)
-  font:  PDFFont; //  PDFFont for the title (optional)
+  font: PDFFont; //  PDFFont for the title (optional)
   textColor: Color; // Text color for the title (optional)
   alignment: Alignment; // Alignment for the title (optional)
 }

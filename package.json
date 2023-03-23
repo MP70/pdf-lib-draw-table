@@ -5,7 +5,7 @@
   "main": "build/index.js",
   "scripts": {
     "test:node": "jest --env=node",
-    "test:jsdom": "jest --env=jsdom",  
+    "test:jsdom": "jest --env=jsdom",
     "test": "jest --env=node && jest --env=jsdom",
     "build": "tsc"
   },

@@ -171,26 +171,25 @@ export async function drawTable(
       "Table width exceeds the available space on the page."
     );
   }
-  const tableHeight = row.overrideHeights?.length >0 ? row.overrideHeights.reduce(
-    (acc: number, cur: number) => acc + cur,
-    0
-  ) :  await calcTableHeight(
-    tableData,
-    columnWidths,
-    font,
-    textSize,
-    lineHeight,
-    header.hasHeaderRow,
-    header.hasHeaderRow ? header.font : font,
-    header.hasHeaderRow ? header.textSize ?? header.textSize : textSize,
-    lineHeight, // this is headerLineHeight (assuming same as above for now, here for future functonality.)
-    contentMargin.horizontal,
-    contentMargin.vertical,
-    border.width,
-    title.text,
-    title.textSize
-  );
-
+  const tableHeight =
+    row.overrideHeights?.length > 0
+      ? row.overrideHeights.reduce((acc: number, cur: number) => acc + cur, 0)
+      : await calcTableHeight(
+          tableData,
+          columnWidths,
+          font,
+          textSize,
+          lineHeight,
+          header.hasHeaderRow,
+          header.hasHeaderRow ? header.font : font,
+          header.hasHeaderRow ? header.textSize ?? header.textSize : textSize,
+          lineHeight, // this is headerLineHeight (assuming same as above for now, here for future functonality.)
+          contentMargin.horizontal,
+          contentMargin.vertical,
+          border.width,
+          title.text,
+          title.textSize
+        );
 
   // Check for table height overflow
   if (tableHeight > availableHeight) {
