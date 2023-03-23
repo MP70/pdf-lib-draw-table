@@ -15,15 +15,13 @@
 
 ## Installation
 
-```
-sh
+```sh
 npm install pdf-lib-draw-table
 ```
 
 If you don't already have pdf-lib then
 
-```
-sh
+```sh
 npm install pdf-lib pdf-lib-draw-table
 ```
 
