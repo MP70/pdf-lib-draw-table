@@ -26,7 +26,13 @@ npm install pdf-lib pdf-lib-draw-table
 ```
 
 ## Example
-This is a *very* simple example, this example is server side as we are using fs, but exactly the same code (minus fs!) will also work client side for example in a react component. The options are fairly extensive for both styling and content (https://mp70.github.io/pdf-lib-draw-table/interfaces/DrawTableOptions.html), we just show a couple here. You can also pass us a JSON table(https://mp70.github.io/pdf-lib-draw-table/interfaces/TableObject.html), either that or array as below is fine.
+This is a *very* simple example (server side as we are using fs). Exactly the same code (minus fs!) will also work client side for example in a react component. The options are fairly extensive for [formatting and styling](https://mp70.github.io/pdf-lib-draw-table/interfaces/DrawTableOptions.html), we just show a couple here. You can also pass us a [JSON table](https://mp70.github.io/pdf-lib-draw-table/interfaces/TableObject.html) if you prefer, either that or array as below is fine. Either can contain any of the following within each cell:
+string - As in the example below. This is drawn as wrapped text, no word splitting.
+[Image](https://mp70.github.io/pdf-lib-draw-table/types/Image.html),
+[Link](https://mp70.github.io/pdf-lib-draw-table/types/Link.html),
+[CustomSyledText](https://mp70.github.io/pdf-lib-draw-table/interfaces/CustomStyledText.html)
+**OR AN ARRAY OF ANY COMBO OF THE ABOVE**
+If you provide an array we automatically put each item on its own line, as such if you need to manually new line text, this is a way of doing that.
 ```
 import { PDFDocument } from 'pdf-lib';
 import { drawTable } from 'pdf-lib-draw-table';
