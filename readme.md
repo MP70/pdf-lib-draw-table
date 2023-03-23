@@ -26,7 +26,7 @@ npm install pdf-lib pdf-lib-draw-table
 ```
 
 ## Example Usage
-This is a very simple example, as we use fs this demo is server side, but exactly the same code (minus fs!) will also work client side (e.g in a react component)
+This is a *very* simple example, this example is server side as we are using fs, but exactly the same code (minus fs!) will also work client side for example in a react component. The options are fairly extensive for both styling and content (https://mp70.github.io/pdf-lib-draw-table/interfaces/DrawTableOptions.html), we just show a couple here. You can also pass us a JSON table(https://mp70.github.io/pdf-lib-draw-table/interfaces/TableObject.html), either that or array as below is fine.
 ```
 import { PDFDocument } from 'pdf-lib';
 import { drawTable } from 'pdf-lib-draw-table';
