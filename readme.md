@@ -25,30 +25,54 @@ If you don't already have pdf-lib then
 npm install pdf-lib pdf-lib-draw-table
 ```
 
-## Usage
-
+## Example Usage
+This is a very simple example, as we use fs this demo is server side, but exactly the same code (minus fs!) will also work client side (e.g in a react component)
 ```
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument } from 'pdf-lib';
+import { drawTable } from 'pdf-lib-draw-table';
+import fs from 'fs';
 
-// Import helper functions and types for drawing the table
-import { drawTable, DrawTableOptions, CellContent } from "pdf-lib-draw-table";
-
-// Main function to create and draw a table in a PDF document
-async function createTableInPDF() {
-  // Create a new PDF document
+(async () => {
+  // Create a new PDFDocument
   const pdfDoc = await PDFDocument.create();
 
-  // Add a new page to the document
-  const page = pdfDoc.addPage([600, 400]);
+  // Add a new page
+  const page = pdfDoc.addPage([600, 800]);
 
-  // Define table data
-  const tableData: CellContent[][] = [
-    ["Header 1", "Header 2", "Header 3"],
-    ["Row 1, Col 1", "Row 1, Col 2", "Row 1, Col 3"],
-    ["Row 2, Col 1", "Row 2, Col 2", "Row 2, Col 3"],
+  // Define the table data
+  const tableData = [
+    ['Name', 'Age', 'City'],
+    ['Alice', '24', 'New York'],
+    ['Bob', '30', 'San Francisco'],
+    ['Charlie', '22', 'Los Angeles'],
   ];
 
-  // Set up options for drawing the table
+  // Set the starting X and Y coordinates for the table
+  const startX = 50;
+  const startY = 750;
+
+  // Set the table options
+  const options = {
+    header: {
+      hasHeaderRow: true,
+      backgroundColor: { red: 0.8, green: 0.8, blue: 0.8 },
+    },
+  };
+
+  try {
+    // Draw the table
+    const tableDimensions = await drawTable(pdfDoc, page, tableData, startX, startY, options);
+
+    console.log('Table dimensions:', tableDimensions);
+
+    // Serialize the PDF to bytes and write to a file
+    const pdfBytes = await pdfDoc.save();
+    fs.writeFileSync('table-example.pdf', pdfBytes);
+  } catch (error) {
+    console.error('Error drawing table:', error);
+  }
+})();
+
 
 
 ```
