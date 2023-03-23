@@ -78,9 +78,11 @@ import fs from 'fs';
     console.error('Error drawing table:', error);
   }
 })();
-
-
-
 ```
 
+Thanks to the PDF lib team for creating a powerful PDF manipulation library: 
+https://github.com/pdf-lib/pdf-lib
+
+Also, big thanks to Typedoc for providing the amazing documentation generator tool that makes /docs: 
+https://github.com/TypeStrong/typedoc
 
