@@ -100,11 +100,10 @@ export async function drawTable(
   let tableData: CellContent[][];
 
   try {
-    const fillEmpty = true;
     tableData = await validateAndConvertTableData({
       data: table,
       hasHeader: header.hasHeaderRow!,
-      fillEmpty,
+      fillEmpty:  fillUndefCells,
     });
   } catch (error: any) {
     throw new DrawTableError(
