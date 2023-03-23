@@ -1,4 +1,4 @@
-name: Run Tests and soft fail 
+name: Run Tests and soft fail
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
         run: npm install
 
       - name: Run Tests
-        run: npm test 
+        run: npm test
 
       - name: Check for Test Failures
         run: |
@@ -29,5 +29,3 @@ jobs:
             echo "Tests failed. FIX."
             exit 1
           fi
-
-

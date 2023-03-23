@@ -21,7 +21,9 @@ A library for drawing tables in PDFs using pdf-lib.
 sh
 npm install pdf-lib-draw-table
 ```
+
 If you don't already have pdf-lib then
+
 ```
 sh
 npm install pdf-lib pdf-lib-draw-table
@@ -54,4 +56,5 @@ async function createTableInPDF() {
 
 
 ```
+
 ## Example

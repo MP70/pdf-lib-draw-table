@@ -103,7 +103,7 @@ export async function drawTable(
     tableData = await validateAndConvertTableData({
       data: table,
       hasHeader: header.hasHeaderRow!,
-      fillEmpty:  fillUndefCells,
+      fillEmpty: fillUndefCells,
     });
   } catch (error: any) {
     throw new DrawTableError(
