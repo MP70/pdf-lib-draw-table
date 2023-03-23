@@ -25,7 +25,7 @@ If you don't already have pdf-lib then
 npm install pdf-lib pdf-lib-draw-table
 ```
 
-## Example Usage
+## Example
 This is a *very* simple example, this example is server side as we are using fs, but exactly the same code (minus fs!) will also work client side for example in a react component. The options are fairly extensive for both styling and content (https://mp70.github.io/pdf-lib-draw-table/interfaces/DrawTableOptions.html), we just show a couple here. You can also pass us a JSON table(https://mp70.github.io/pdf-lib-draw-table/interfaces/TableObject.html), either that or array as below is fine.
 ```
 import { PDFDocument } from 'pdf-lib';
@@ -55,7 +55,7 @@ import fs from 'fs';
   const options = {
     header: {
       hasHeaderRow: true,
-      backgroundColor: { red: 0.8, green: 0.8, blue: 0.8 },
+      backgroundColor: rgb(0.9, 0.9, 0.9),
     },
   };
 
@@ -77,4 +77,4 @@ import fs from 'fs';
 
 ```
 
-## Example
+
