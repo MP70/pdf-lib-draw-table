@@ -80,8 +80,8 @@ import fs from 'fs';
 })();
 ```
 
-Thanks to the PDF lib team for creating a powerful PDF manipulation library: 
-https://github.com/pdf-lib/pdf-lib
+Thanks to the PDF lib for creating a powerful PDF manipulation library: 
+pdf-lib(https://github.com/Hopding/pdf-lib)
 
 Also, big thanks to Typedoc for providing the amazing documentation generator tool that makes /docs: 
 https://github.com/TypeStrong/typedoc
