@@ -67,7 +67,7 @@ export async function drawTable(
   table: CellContent[][] | TableObject,
   startX: number,
   startY: number,
-  userOptions?: TableOptionsDeepPartial<DrawTableOptions> | undefined
+  options?: TableOptionsDeepPartial<DrawTableOptions> | undefined
 ): Promise<TableDimensions> {
   const embeddedFont = await doc.embedFont(StandardFonts.Helvetica);
   const embeddedTableTitleFont = await doc.embedFont(
@@ -77,7 +77,7 @@ export async function drawTable(
   const defaultOptions: DrawTableOptions = setDefaults(
     embeddedFont,
     embeddedTableTitleFont,
-    (userOptions as TableOptionsDeepPartial<DrawTableOptions>) ?? {}
+    (options as TableOptionsDeepPartial<DrawTableOptions>) ?? {}
   );
   const {
     fillUndefCells,
