@@ -23,9 +23,6 @@ jobs:
       - name: Run Tests
         run: npm test 
 
-      - name: Upload coverage reports to Codecov
-  uses: codecov/codecov-action@v3  
-
       - name: Check for Test Failures
         run: |
           if [ $? -eq 1 ]; then
