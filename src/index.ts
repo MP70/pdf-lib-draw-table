@@ -9,7 +9,6 @@ import {
   TableDimensions,
   TableObject,
   Alignment,
-  BasicTableOptions,
   CellElement,
   Link,
   Image,
@@ -21,7 +20,7 @@ import {
   RowOptions,
   TitleOptions,
   ImageBase,
-  LinkBase
+  LinkBase,
 } from "../types";
 
 // Export your functions and types
@@ -34,7 +33,6 @@ export {
   HeaderOptions,
   TableDimensions,
   TableObject,
-  BasicTableOptions,
   Alignment,
   CellElement,
   Link,

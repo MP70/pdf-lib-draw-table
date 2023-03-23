@@ -1,0 +1,31 @@
+name: Run Tests and Reject Pushes with Failures
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18.x'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Check for Test Failures
+        run: |
+          if [ $? -eq 1 ]; then
+            echo "Tests failed. Rejecting push."
+            exit 1
+          fi

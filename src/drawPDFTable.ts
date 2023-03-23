@@ -19,12 +19,11 @@ import validateAndConvertTableData from "./helpers/validateAndConvert"; // Adjus
 
 import { drawElement } from "./helpers/drawContent";
 import {
-  BasicTableOptions,
   CellContent,
   DrawTableOptions,
-  HeaderOptions,
   TableDimensions,
   TableObject,
+  TableOptionsDeepPartial,
 } from "../types";
 import { calcTableHeight, calcRowHeight } from "./helpers/tableHeights";
 import { setDefaults } from "./helpers/setDefaults";
@@ -68,17 +67,17 @@ export async function drawTable(
   table: CellContent[][] | TableObject,
   startX: number,
   startY: number,
-  userOptions?: Partial<DrawTableOptions>
+  userOptions?: TableOptionsDeepPartial<DrawTableOptions> | undefined
 ): Promise<TableDimensions> {
   const embeddedFont = await doc.embedFont(StandardFonts.Helvetica);
   const embeddedTableTitleFont = await doc.embedFont(
     StandardFonts.HelveticaBold
   );
   // Set defaults for all options
-  const defaultOptions: BasicTableOptions = setDefaults(
+  const defaultOptions: DrawTableOptions = setDefaults(
     embeddedFont,
     embeddedTableTitleFont,
-    userOptions ?? {}
+    (userOptions as TableOptionsDeepPartial<DrawTableOptions>) ?? {}
   );
   const {
     fillUndefCells,
@@ -104,7 +103,7 @@ export async function drawTable(
     const fillEmpty = true;
     tableData = await validateAndConvertTableData({
       data: table,
-      hasHeader: header.hasHeaderRow,
+      hasHeader: header.hasHeaderRow!,
       fillEmpty,
     });
   } catch (error: any) {
@@ -165,7 +164,17 @@ export async function drawTable(
     (acc: number, cur: number) => acc + cur,
     0
   );
-  const tableHeight = await calcTableHeight(
+  // Check for table width overflow
+  if (tableWidth > availableWidth) {
+    throw new DrawTableError(
+      "ERR_TABLE_WIDTH_OVERFLOW",
+      "Table width exceeds the available space on the page."
+    );
+  }
+  const tableHeight = row.overrideHeights?.length >0 ? row.overrideHeights.reduce(
+    (acc: number, cur: number) => acc + cur,
+    0
+  ) :  await calcTableHeight(
     tableData,
     columnWidths,
     font,
@@ -182,13 +191,6 @@ export async function drawTable(
     title.textSize
   );
 
-  // Check for table width overflow
-  if (tableWidth > availableWidth) {
-    throw new DrawTableError(
-      "ERR_TABLE_WIDTH_OVERFLOW",
-      "Table width exceeds the available space on the page."
-    );
-  }
 
   // Check for table height overflow
   if (tableHeight > availableHeight) {
