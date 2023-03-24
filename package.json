@@ -1,8 +1,9 @@
 {
   "name": "pdf-lib-draw-table-beta",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "description": "A library for drawing tables in PDFs using pdf-lib.",
-  "main": "build/index.js",
+  "main": "build/src/index.js",
+  "types": "build/src/index.d.ts",
   "scripts": {
     "test:node": "jest --env=node",
     "test:jsdom": "jest --env=jsdom",
@@ -37,12 +38,12 @@
     "@types/jest": "^29.5.0",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
+    "pdf-lib": "^1.17.1",
     "ts-jest": "^29.0.5",
     "typescript": "^5.0.2"
   },
   "publishConfig": {
     "access": "public"
   },
-  "copyright": "Copyright (c) 2023 Matt Pickering, All rights reserved.",
-  "type": "module"
+  "copyright": "Copyright (c) 2023 Matt Pickering, All rights reserved."
 }
