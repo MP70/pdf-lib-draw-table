@@ -1,4 +1,4 @@
-# WIP - pdf-lib-draw-table
+# Beta - pdf-lib-draw-table
 
 [![codecov](https://codecov.io/gh/MP70/pdf-lib-draw-table/branch/main/graph/badge.svg?token=BMJ2WXX5EV)](https://codecov.io/gh/MP70/pdf-lib-draw-table)[![Tests](https://github.com/MP70/pdf-lib-draw-table/actions/workflows/runTests.yml/badge.svg)](https://github.com/MP70/pdf-lib-draw-table/actions/workflows/runTests.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-%5E5.0.2-blue)](https://mp70.github.io/pdf-lib-draw-table)
@@ -16,7 +16,7 @@
 ## Installation
 
 ```sh
-npm install pdf-lib-draw-table
+npm install pdf-lib-draw-table-beta
 ```
 
 If you don't already have pdf-lib then
