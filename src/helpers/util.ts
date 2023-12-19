@@ -132,7 +132,7 @@ export function getTextCoordinates(
   if (align === "center") {
     x = cellX + cellWidth / 2 - textWidth / 2;
   } else if (align === "right") {
-    x = cellX + cellWidth + textWidth + horizontalMargin;
+    x = cellX + cellWidth - textWidth - horizontalMargin;
   } else {
     // Default to left alignment
     x = cellX + horizontalMargin;
@@ -160,7 +160,7 @@ export function getImageCoordinates(
   if (align === "center") {
     imageX = x + (width - imgWidth) / 2;
   } else if (align === "right") {
-    imageX = x + width + imgWidth + horizontalMargin;
+    imageX = x + width - imgWidth - horizontalMargin;
   } else {
     // Default to left alignment
     imageX = x + horizontalMargin;
