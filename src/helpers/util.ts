@@ -125,45 +125,46 @@ export function getTextCoordinates(
   textWidth: number,
   borderWidth: number
 ): { x: number; y: number } {
-  //init x
   let x: number;
 
   // Calculate the x coordinate based on the alignment
   if (align === "center") {
-    x = cellX + cellWidth / 2 - textWidth / 2;
+    x = cellX + ((cellWidth / 2) + (borderWidth / 2) )- (textWidth / 2);
   } else if (align === "right") {
-    x = cellX + cellWidth - textWidth - horizontalMargin;
+    x = (cellX + cellWidth + borderWidth/2) - (textWidth + horizontalMargin );
   } else {
     // Default to left alignment
-    x = cellX + horizontalMargin;
+    x = cellX + horizontalMargin + (borderWidth / 2);
   }
 
-  //Calc the Y position based on margins and border width..
-  const y = textY - (verticalMargin + Math.floor(borderWidth / 2));
+  // Calculate the Y position based on margins and border width
+  const y = textY - verticalMargin - (borderWidth / 2);
   return { x, y };
 }
+
 
 // This function returns the x and y coordinates for placing an image based on the provided alignment, cell position, and dimensions.
 export function getImageCoordinates(
   align: Alignment,
-  x: number,
+  cellX: number,
   y: number,
-  width: number,
+  cellWidth: number,
   imgWidth: number,
   imgHeight: number,
-  horizontalMargin: number = 0
+  horizontalMargin: number = 0,
+  borderWidth: number = 0 // Set default value to 0
 ): { x: number; y: number } {
   let imageX: number;
   let imageY: number = y - imgHeight;
 
   // Calculate the x coordinate based on the alignment
   if (align === "center") {
-    imageX = x + (width - imgWidth) / 2;
+    imageX = cellX + ((cellWidth / 2) + (borderWidth / 2) ) - (imgWidth / 2);
   } else if (align === "right") {
-    imageX = x + width - imgWidth - horizontalMargin;
+    imageX = (cellX + cellWidth + borderWidth / 2) - (imgWidth + horizontalMargin);
   } else {
     // Default to left alignment
-    imageX = x + horizontalMargin;
+    imageX = cellX + horizontalMargin + (borderWidth / 2);
   }
   const yOut = imageY;
 
