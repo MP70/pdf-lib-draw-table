@@ -47,7 +47,7 @@ export async function calcTableHeight(
   const titleHeight = tableTitle ? (tableTitletextSize || textSize) * 2 : 0;
 
   // Return the total height of the table, including the title
-  return totalHeight + titleHeight;
+  return totalHeight + titleHeight + borderMargin;
 }
 
 // Calculate the height of a single row

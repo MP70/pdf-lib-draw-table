@@ -387,7 +387,7 @@ export async function drawTable(
   // Return table dimensions and end x/y. Useful for consumer if they are writing other content to the PDF page after this.
   return {
     endX: startX + tableWidth,
-    endY: startY + tableHeight,
+    endY: startY - tableHeight,
     width: tableWidth,
     height: tableHeight,
   };
