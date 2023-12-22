@@ -5,6 +5,7 @@ import {
   Alignment,
   CustomStyledText,
   CellElement,
+  BreakWordMode,
 } from "../../types";
 
 /* export function isCustomStyledText(content: CellElement): content is CustomStyledText {
@@ -30,7 +31,7 @@ export function drawBorder(
   endX: number,
   endY: number,
   borderWidth: number,
-  borderColor: Color
+  borderColor: Color,
 ): void {
   // Define the start and end coordinates for the border line
   const lineCoordinates = {
@@ -46,30 +47,42 @@ export function drawBorder(
   });
 }
 
-// Wraps a text into multiple lines based on the maxWidth, font, and textSize provided
 export function wrapText(
   text: string,
   maxWidth: number,
   font: PDFFont,
   textSize: number,
-  breakWords: boolean = false // future feature
+  breakWords: boolean = true,
 ): string[] {
   const words = text.trim().split(" ");
   const lines: string[] = [];
   let currentLine = "";
 
   for (const word of words) {
-    const newLine = currentLine === "" ? word : `${currentLine} ${word}`;
-    const newLineWidth = font.widthOfTextAtSize(newLine, textSize);
+    const wordWidth = font.widthOfTextAtSize(word, textSize);
 
-    if (newLineWidth <= maxWidth) {
-      currentLine = newLine;
+    if (breakWords && wordWidth > maxWidth) {
+      const brokenWords = breakWord(word, maxWidth, font, textSize);
+      if (brokenWords.length > 1 && brokenWords[1].length > 1) {
+        // Break the word and add a hyphen at the beginning of the new line part
+        if (currentLine !== "") {
+          lines.push(currentLine);
+        }
+        lines.push(brokenWords[0]);
+        currentLine = `-${brokenWords[1]}`;
+      } else {
+        // Move the word to a new line if it cannot be broken properly
+        if (currentLine !== "") {
+          lines.push(currentLine);
+        }
+        currentLine = word;
+      }
     } else {
-      if (breakWords) {
-        const brokenWord = breakWord(word, maxWidth, font, textSize);
-        const remainingWord = word.slice(brokenWord.length);
-        lines.push(`${currentLine} ${brokenWord}`.trim());
-        currentLine = remainingWord;
+      const newLine = currentLine === "" ? word : `${currentLine} ${word}`;
+      const newLineWidth = font.widthOfTextAtSize(newLine, textSize);
+
+      if (newLineWidth <= maxWidth) {
+        currentLine = newLine;
       } else {
         if (currentLine !== "") {
           lines.push(currentLine);
@@ -90,20 +103,35 @@ function breakWord(
   word: string,
   maxWidth: number,
   font: PDFFont,
-  textSize: number
-): string {
-  let brokenWord = "";
-  for (const char of word) {
-    const newBrokenWord = `${brokenWord}${char}`;
-    const newBrokenWordWidth = font.widthOfTextAtSize(newBrokenWord, textSize);
+  textSize: number,
+): string[] {
+  const brokenWords: string[] = [];
+  let currentWord = "";
 
-    if (newBrokenWordWidth <= maxWidth) {
-      brokenWord = newBrokenWord;
+  for (const char of word) {
+    const testWord = currentWord + char;
+    const testWordWidth = font.widthOfTextAtSize(testWord, textSize);
+
+    if (testWordWidth > maxWidth) {
+      if (currentWord.length < 3) {
+        // Avoid breaking into very small parts
+        return [word];
+      }
+      brokenWords.push(currentWord);
+      currentWord = char;
     } else {
-      break;
+      currentWord = testWord;
     }
   }
-  return brokenWord;
+
+  if (currentWord !== "" && currentWord.length > 1) {
+    brokenWords.push(currentWord);
+  } else {
+    // Avoid breaking the word if it results in a very short segment
+    return [word];
+  }
+
+  return brokenWords;
 }
 
 // This function returns the x and y coordinates for placing text based on the provided alignment, cell position, and dimensions.
@@ -123,25 +151,24 @@ export function getTextCoordinates(
   verticalMargin: number,
   cellWidth: number,
   textWidth: number,
-  borderWidth: number
+  borderWidth: number,
 ): { x: number; y: number } {
   let x: number;
 
   // Calculate the x coordinate based on the alignment
   if (align === "center") {
-    x = cellX + ((cellWidth / 2) + (borderWidth / 2) )- (textWidth / 2);
+    x = cellX + (cellWidth / 2 + borderWidth / 2) - textWidth / 2;
   } else if (align === "right") {
-    x = (cellX + cellWidth + borderWidth/2) - (textWidth + horizontalMargin );
+    x = cellX + cellWidth + borderWidth / 2 - (textWidth + horizontalMargin);
   } else {
     // Default to left alignment
-    x = cellX + horizontalMargin + (borderWidth / 2);
+    x = cellX + horizontalMargin + borderWidth / 2;
   }
 
   // Calculate the Y position based on margins and border width
-  const y = textY - verticalMargin - (borderWidth / 2);
+  const y = textY - verticalMargin - borderWidth / 2;
   return { x, y };
 }
-
 
 // This function returns the x and y coordinates for placing an image based on the provided alignment, cell position, and dimensions.
 export function getImageCoordinates(
@@ -152,19 +179,20 @@ export function getImageCoordinates(
   imgWidth: number,
   imgHeight: number,
   horizontalMargin: number = 0,
-  borderWidth: number = 0 // Set default value to 0
+  borderWidth: number = 0, // Set default value to 0
 ): { x: number; y: number } {
   let imageX: number;
   let imageY: number = y - imgHeight;
 
   // Calculate the x coordinate based on the alignment
   if (align === "center") {
-    imageX = cellX + ((cellWidth / 2) + (borderWidth / 2) ) - (imgWidth / 2);
+    imageX = cellX + (cellWidth / 2 + borderWidth / 2) - imgWidth / 2;
   } else if (align === "right") {
-    imageX = (cellX + cellWidth + borderWidth / 2) - (imgWidth + horizontalMargin);
+    imageX =
+      cellX + cellWidth + borderWidth / 2 - (imgWidth + horizontalMargin);
   } else {
     // Default to left alignment
-    imageX = cellX + horizontalMargin + (borderWidth / 2);
+    imageX = cellX + horizontalMargin + borderWidth / 2;
   }
   const yOut = imageY;
 

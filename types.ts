@@ -13,6 +13,13 @@ import {
 // Alignment options for text elements
 export type Alignment = "left" | "center" | "right";
 
+//Currently internal only, nor exposed to the user. 
+//Optimal mode will come in a future release, as it needs a bit more testing. May also add a "none" mode.
+export enum BreakWordMode {
+  Essential = "essential", //DEFAULT ON
+  Optimal = "optimal",
+}
+
 // Options for distributing column widths in the table
 export type GenColumnWidthOptions = {
   columnWidthMode: "equal" | "auto" | "wrapHeader"; // Mode for calculating column widths
