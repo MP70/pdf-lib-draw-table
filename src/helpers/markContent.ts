@@ -7,7 +7,7 @@ import { PDFHexString, PDFName, PDFDocument } from "pdf-lib";
 // It returns a string that should be used in the PDF content stream to begin the marked content section.
 export async function beginMarkedContent(
   pdfDoc: PDFDocument,
-  mcid: PDFHexString
+  mcid: PDFHexString,
 ): Promise<string> {
   // Get the document catalog
   const catalog = pdfDoc.catalog;
@@ -30,7 +30,7 @@ export async function endMarkedContent(): Promise<string> {
 // This async function generates a unique MCID (Marked Content Identifier) for the PDF document.
 // It returns the MCID as a PDFHexString.
 export async function generateUniqueMCID(
-  pdfDoc: PDFDocument
+  pdfDoc: PDFDocument,
 ): Promise<PDFHexString> {
   // Get the document catalog
   const catalog = pdfDoc.catalog;

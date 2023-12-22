@@ -5,7 +5,7 @@ import {
 } from "../../types";
 
 async function validateAndConvertTableData(
-  input: TableDataConverterValidatorInput
+  input: TableDataConverterValidatorInput,
 ): Promise<CellContent[][]> {
   return new Promise((resolve, reject) => {
     const { data, hasHeader, fillEmpty } = input;
@@ -15,11 +15,11 @@ async function validateAndConvertTableData(
     }
 
     const isTableObject = (
-      data: CellContent[][] | TableObject
+      data: CellContent[][] | TableObject,
     ): data is TableObject => "columns" in data && "rows" in data;
 
     const convertTableObjectToCellContentArray = (
-      tableObject: TableObject
+      tableObject: TableObject,
     ): CellContent[][] => {
       const cellContentArray: CellContent[][] = [];
 
@@ -52,7 +52,7 @@ async function validateAndConvertTableData(
       const filledTable = table.map((row, index) => {
         if (row.length > headerRowLength) {
           reject(
-            new Error(`Row ${index + 1} has more cells than the header row.`)
+            new Error(`Row ${index + 1} has more cells than the header row.`),
           );
         }
 
@@ -60,7 +60,7 @@ async function validateAndConvertTableData(
           return row.concat(new Array(headerRowLength - row.length).fill(""));
         } else if (row.length < headerRowLength) {
           reject(
-            new Error(`Row ${index + 1} has fewer cells than the header row.`)
+            new Error(`Row ${index + 1} has fewer cells than the header row.`),
           );
         }
 

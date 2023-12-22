@@ -19,7 +19,7 @@ import { DrawTableError } from "../drawPDFTable";
 function getContentWidth(
   content: CellElement,
   font: PDFFont,
-  textSize: number
+  textSize: number,
 ): number {
   if (
     typeof content === "string" ||
@@ -57,7 +57,7 @@ function calculateHeaderWidths(
   headerFont: PDFFont,
   headertextSize: number,
   headerHorizontalMargin: number,
-  borderWidth: number
+  borderWidth: number,
 ): number[] {
   return headers.map((headerContent: CellContent) => {
     if (Array.isArray(headerContent)) {
@@ -105,14 +105,14 @@ export function generateColumnWidths(options: GenColumnWidthOptions): number[] {
         headerFont!,
         headerTextSize!,
         headerHorizontalMargin, // Use headerHorizontalMargin instead of horizontalMargin
-        borderWidth
+        borderWidth,
       );
     }
     if (columnWidthMode === "wrapHeader") {
       if (!hasHeader) {
         throw new DrawTableError(
           "ERR_WRAP_HEADER_INVALID",
-          `Failed to draw, wrap header not valid when no header set `
+          `Failed to draw, wrap header not valid when no header set `,
         );
       }
       return headerWidths;
@@ -135,7 +135,7 @@ export function generateColumnWidths(options: GenColumnWidthOptions): number[] {
                     borderWidth
                   );
                 },
-                0
+                0,
               );
             } else {
               contentWidth =
@@ -147,13 +147,13 @@ export function generateColumnWidths(options: GenColumnWidthOptions): number[] {
             widths[colIndex] = Math.max(
               widths[colIndex] || 0,
               contentWidth,
-              headerWidths[colIndex]
+              headerWidths[colIndex],
             );
           });
 
           return widths;
         },
-        []
+        [],
       );
 
       let columnWidths = maxTextWidths.map((width: number) => width);
@@ -168,22 +168,22 @@ export function generateColumnWidths(options: GenColumnWidthOptions): number[] {
           if (scaleFactor < 0.9) {
             throw new DrawTableError(
               "ERR_NO_SPACE_FOR_HEADERS",
-              `Drawing this would require us to squish the headers too much (<90%). Please choose equal, give us more page width, or manually set col widths.`
+              `Drawing this would require us to squish the headers too much (<90%). Please choose equal, give us more page width, or manually set col widths.`,
             );
           }
           columnWidths = columnWidths.map((width, index) =>
-            Math.floor(headerWidths[index] * scaleFactor)
+            Math.floor(headerWidths[index] * scaleFactor),
           );
         } else {
           const scaleFactor =
             (adjustedWidth - headerTotalWidth) /
             (totalWidth - headerTotalWidth);
           const newContentWidths = columnWidths.map(
-            (width) => width * scaleFactor
+            (width) => width * scaleFactor,
           );
 
           columnWidths = columnWidths.map((width, index) =>
-            Math.max(headerWidths[index], newContentWidths[index])
+            Math.max(headerWidths[index], newContentWidths[index]),
           );
 
           const newTotalWidth = columnWidths.reduce((acc, cur) => acc + cur, 0);
@@ -195,7 +195,7 @@ export function generateColumnWidths(options: GenColumnWidthOptions): number[] {
         }
       } else {
         columnWidths = columnWidths.map((width, index) =>
-          Math.max(width, headerWidths[index])
+          Math.max(width, headerWidths[index]),
         );
       }
 
@@ -204,7 +204,7 @@ export function generateColumnWidths(options: GenColumnWidthOptions): number[] {
   } else {
     throw new DrawTableError(
       "ERR_INVALID_DISTRIBUTE_MODE",
-      'Invalid distribute mode. Choose "auto", "wrapHeader" or "equal".'
+      'Invalid distribute mode. Choose "auto", "wrapHeader" or "equal".',
     );
   }
 }

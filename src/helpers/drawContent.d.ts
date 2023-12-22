@@ -34,5 +34,5 @@ export declare function drawElement(
   lineHeight: number,
   horizontalMargin: number,
   verticalMargin: number,
-  borderWidth: number
+  borderWidth: number,
 ): Promise<number>;

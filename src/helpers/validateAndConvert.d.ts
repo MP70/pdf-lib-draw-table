@@ -1,5 +1,5 @@
 import { TableDataConverterValidatorInput, CellContent } from "../../types";
 declare function validateAndConvertTableData(
-  input: TableDataConverterValidatorInput
+  input: TableDataConverterValidatorInput,
 ): Promise<CellContent[][]>;
 export default validateAndConvertTableData;

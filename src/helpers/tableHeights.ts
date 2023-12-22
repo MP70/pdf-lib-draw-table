@@ -23,7 +23,7 @@ export async function calcTableHeight(
   verticalMargin: number,
   borderMargin: number,
   tableTitle?: string, // Optional table title
-  tableTitletextSize?: number // Optional font size for the table title
+  tableTitletextSize?: number, // Optional font size for the table title
 ): Promise<number> {
   // Calculate the height of each row in the table
   const rowHeights = await Promise.all(
@@ -36,9 +36,9 @@ export async function calcTableHeight(
         rowIndex === 0 && hasHeader ? headerLineHeight : lineHeight,
         horizontalWrapMargin,
         verticalMargin,
-        borderMargin
-      )
-    )
+        borderMargin,
+      ),
+    ),
   );
 
   // Calculate the total height of the table by summing up row heights
@@ -59,7 +59,7 @@ export async function calcRowHeight(
   lineHeight: number,
   horizontalWrapMargin: number,
   verticalCellPadding: number,
-  borderMargin: number
+  borderMargin: number,
 ): Promise<number> {
   const wrappedLineHeights = await Promise.all(
     row.map(async (cellContent, index) => {
@@ -70,7 +70,7 @@ export async function calcRowHeight(
         content: CellContent,
         maxWidth: number,
         defaultFont: PDFFont,
-        defaulttextSize: number
+        defaulttextSize: number,
       ): number => {
         if (Array.isArray(content)) {
           return content.reduce((sum, innerContent) => {
@@ -80,7 +80,7 @@ export async function calcRowHeight(
                 innerContent,
                 maxWidth,
                 defaultFont,
-                defaulttextSize
+                defaulttextSize,
               )
             );
           }, 0);
@@ -91,7 +91,7 @@ export async function calcRowHeight(
             content.text,
             maxWidth,
             contentFont,
-            contenttextSize
+            contenttextSize,
           );
           return (
             borderMargin +
@@ -104,7 +104,7 @@ export async function calcRowHeight(
             content,
             maxWidth,
             defaultFont,
-            defaulttextSize
+            defaulttextSize,
           );
           return (
             borderMargin +
@@ -120,7 +120,7 @@ export async function calcRowHeight(
       };
 
       return getContentWrappedLineHeight(cellContent, maxWidth, font, textSize);
-    })
+    }),
   );
 
   const maxHeight = Math.max(...wrappedLineHeights);

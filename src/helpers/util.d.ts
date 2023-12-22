@@ -1,7 +1,7 @@
 import { PDFFont, Color, PDFPage } from "pdf-lib";
 import { Link, Image, Alignment, CustomStyledText } from "../../types";
 export declare function isCustomStyledText(
-  content: any
+  content: any,
 ): content is CustomStyledText;
 export declare function isImage(content: any): content is Image;
 export declare function isLink(content: any): content is Link;
@@ -12,14 +12,14 @@ export declare function drawBorder(
   endX: number,
   endY: number,
   borderWidth: number,
-  borderColor: Color
+  borderColor: Color,
 ): void;
 export declare function wrapText(
   text: string,
   maxWidth: number,
   font: PDFFont,
   textSize: number,
-  breakWords?: boolean
+  breakWords?: boolean,
 ): string[];
 /**
  * Get the text coordinates for a cell based on alignment, position, and dimensions.
@@ -37,7 +37,7 @@ export declare function getTextCoordinates(
   verticalMargin: number,
   cellWidth: number,
   textWidth: number,
-  borderWidth: number
+  borderWidth: number,
 ): {
   x: number;
   y: number;
@@ -49,7 +49,7 @@ export declare function getImageCoordinates(
   width: number,
   imgWidth: number,
   imgHeight: number,
-  horizontalMargin?: number
+  horizontalMargin?: number,
 ): {
   x: number;
   y: number;

@@ -37,7 +37,7 @@ export async function drawElement(
   lineHeight: number,
   horizontalMargin: number,
   verticalMargin: number,
-  borderWidth: number
+  borderWidth: number,
 ): Promise<number> {
   try {
     // Handle text elements
@@ -50,7 +50,7 @@ export async function drawElement(
         elem.text,
         width - 2 * horizontalMargin,
         elem.font || font,
-        elem.textSize || textSize
+        elem.textSize || textSize,
       );
       let textY = y - (elem.textSize || textSize) - verticalMargin;
       const lineSpacing =
@@ -60,7 +60,7 @@ export async function drawElement(
       for (const line of wrappedText) {
         const textWidth = (elem.font || font).widthOfTextAtSize(
           line,
-          elem.textSize || textSize
+          elem.textSize || textSize,
         );
         const { x: textX, y: textYCoord } = getTextCoordinates(
           elem.alignment || alignment,
@@ -70,7 +70,7 @@ export async function drawElement(
           verticalMargin,
           width,
           textWidth,
-          borderWidth
+          borderWidth,
         );
         page.drawText(line, {
           x: textX,
@@ -95,14 +95,14 @@ export async function drawElement(
         image = await page.doc.embedPng(imageData);
       } else {
         throw new Error(
-          "Image element must have either a 'data' or 'src' property."
+          "Image element must have either a 'data' or 'src' property.",
         );
       }
 
       const scaleFactor = Math.min(
         (width - 2 * (element.horizontalMargin || horizontalMargin)) /
           element.width,
-        element.height / element.height
+        element.height / element.height,
       );
       const imgHeight = element.height * scaleFactor;
       const imgWidth = element.width * scaleFactor;
@@ -115,7 +115,7 @@ export async function drawElement(
         width,
         imgHeight,
         imgWidth,
-        element.horizontalMargin || horizontalMargin
+        element.horizontalMargin || horizontalMargin,
       );
 
       // Draw the image on the PDF page
@@ -135,7 +135,7 @@ export async function drawElement(
         element.text,
         width - 2 * horizontalMargin,
         element.font || font,
-        element.textSize || textSize
+        element.textSize || textSize,
       );
       let offsetY = element.textSize || textSize;
       const lineSpacing =
@@ -145,10 +145,10 @@ export async function drawElement(
       wrappedText.forEach((line) => {
         const linkWidth = (element.font || font).widthOfTextAtSize(
           line,
-          element.textSize || textSize
+          element.textSize || textSize,
         );
         const height = (element.font || font).heightAtSize(
-          element.textSize || textSize
+          element.textSize || textSize,
         );
 
         const { x: textX, y: textYCoord } = getTextCoordinates(
@@ -159,7 +159,7 @@ export async function drawElement(
           verticalMargin,
           width,
           linkWidth,
-          borderWidth
+          borderWidth,
         );
 
         // Draw the text for the link
@@ -198,7 +198,7 @@ export async function drawElement(
                 Type: PDFName.of("Action"),
                 S: PDFName.of("GoTo"),
                 D: targetPageRef,
-              })
+              }),
             );
           }
         } else {
@@ -209,7 +209,7 @@ export async function drawElement(
               Type: PDFName.of("Action"),
               S: PDFName.of("URI"),
               URI: element.url,
-            })
+            }),
           );
         }
 
@@ -231,7 +231,7 @@ export async function drawElement(
 
 function getPageRefByNumber(
   doc: PDFDocument,
-  pageNumber: number
+  pageNumber: number,
 ): PDFRef | null {
   const pages = doc.getPages();
   if (pageNumber > pages.length) {

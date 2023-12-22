@@ -5,5 +5,5 @@ import { GenColumnWidthOptions } from "../../types";
  * @returns {number[]} - The output column widths.
  */
 export declare function generateColumnWidths(
-  options: GenColumnWidthOptions
+  options: GenColumnWidthOptions,
 ): number[];

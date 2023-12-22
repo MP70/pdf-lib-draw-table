@@ -4,7 +4,7 @@ import { rgb, PDFFont } from "pdf-lib";
 export const setDefaults = (
   embeddedFont: PDFFont,
   embeddedTableTitleFont: PDFFont,
-  options: TableOptionsDeepPartial<DrawTableOptions>
+  options: TableOptionsDeepPartial<DrawTableOptions>,
 ): DrawTableOptions => {
   return {
     textSize: options.textSize ?? 14, // Set default text size or use provided value

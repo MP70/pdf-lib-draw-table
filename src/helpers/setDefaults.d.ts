@@ -3,5 +3,5 @@ import { PDFFont } from "pdf-lib";
 export declare const setDefaults: (
   embeddedFont: PDFFont,
   embeddedTableTitleFont: PDFFont,
-  options: Partial<DrawTableOptions>
+  options: Partial<DrawTableOptions>,
 ) => DrawTableOptions;

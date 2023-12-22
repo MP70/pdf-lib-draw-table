@@ -7,8 +7,16 @@ import {
 } from "../types";
 export declare class DrawTableError extends Error {
   code: string;
-  constructor(code: string, message: string);
+  dimensions?: TableDimensions;
+
+  constructor(code: string, message: string, dimensions?: TableDimensions) {
+    super(message);
+    this.code = code;
+    this.name = "DrawTableError";
+    this.dimensions = dimensions;
+  }
 }
+
 /**
  * Draws a table on the provided PDF document page.
  *
@@ -39,5 +47,5 @@ export declare function drawTable(
   table: CellContent[][] | TableObject,
   startX: number,
   startY: number,
-  userOptions?: DrawTableOptionsDeepPartial
+  userOptions?: DrawTableOptionsDeepPartial,
 ): Promise<TableDimensions>;

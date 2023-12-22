@@ -14,7 +14,7 @@ export declare function calcTableHeight(
   verticalMargin: number,
   borderMargin: number,
   tableTitle?: string, // Optional table title
-  tableTitletextSize?: number
+  tableTitletextSize?: number,
 ): Promise<number>;
 export declare function calcRowHeight(
   row: CellContent[],
@@ -24,5 +24,5 @@ export declare function calcRowHeight(
   lineHeight: number,
   horizontalWrapMargin: number,
   verticalCellPadding: number,
-  borderMargin: number
+  borderMargin: number,
 ): Promise<number>;
