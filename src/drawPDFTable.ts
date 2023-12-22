@@ -29,10 +29,17 @@ import { calcTableHeight, calcRowHeight } from "./helpers/tableHeights";
 import { setDefaults } from "./helpers/setDefaults";
 export class DrawTableError extends Error {
   code: string;
-  constructor(code: string, message: string) {
+  dimensions?: Partial<TableDimensions>;
+
+  constructor(
+    code: string,
+    message: string,
+    dimensions?: Partial<TableDimensions>,
+  ) {
     super(message);
     this.code = code;
     this.name = "DrawTableError";
+    this.dimensions = dimensions;
   }
 }
 
@@ -67,17 +74,17 @@ export async function drawTable(
   table: CellContent[][] | TableObject,
   startX: number,
   startY: number,
-  options?: TableOptionsDeepPartial<DrawTableOptions> | undefined
+  options?: TableOptionsDeepPartial<DrawTableOptions> | undefined,
 ): Promise<TableDimensions> {
   const embeddedFont = await doc.embedFont(StandardFonts.Helvetica);
   const embeddedTableTitleFont = await doc.embedFont(
-    StandardFonts.HelveticaBold
+    StandardFonts.HelveticaBold,
   );
   // Set defaults for all options
   const defaultOptions: DrawTableOptions = setDefaults(
     embeddedFont,
     embeddedTableTitleFont,
-    (options as TableOptionsDeepPartial<DrawTableOptions>) ?? {}
+    (options as TableOptionsDeepPartial<DrawTableOptions>) ?? {},
   );
   const {
     fillUndefCells,
@@ -108,7 +115,7 @@ export async function drawTable(
   } catch (error: any) {
     throw new DrawTableError(
       "ERR_CONVERT_VALIDATE",
-      `Error validating or converting table data:${error.message}`
+      `Error validating or converting table data:${error.message}`,
     );
   }
 
@@ -119,7 +126,7 @@ export async function drawTable(
   ) {
     throw new DrawTableError(
       "ERR_COLUMN_COUNT_MISMATCH",
-      "The number of columns in overrideWidths does not match the number of columns in the table."
+      "The number of columns in overrideWidths does not match the number of columns in the table.",
     );
   }
 
@@ -130,7 +137,7 @@ export async function drawTable(
   ) {
     throw new DrawTableError(
       "ERR_ROW_COUNT_MISMATCH",
-      "The number of rows in overrideHeights does not match the number of rows in the table."
+      "The number of rows in overrideHeights does not match the number of rows in the table.",
     );
   }
 
@@ -161,13 +168,14 @@ export async function drawTable(
   // Calculate table dimensions
   const tableWidth = columnWidths.reduce(
     (acc: number, cur: number) => acc + cur,
-    0
+    0,
   );
   // Check for table width overflow
   if (tableWidth > availableWidth) {
     throw new DrawTableError(
       "ERR_TABLE_WIDTH_OVERFLOW",
-      "Table width exceeds the available space on the page."
+      "Table width exceeds the available space on the page.",
+      { width: tableWidth, endX: startX + tableWidth },
     );
   }
   const tableHeight =
@@ -187,14 +195,20 @@ export async function drawTable(
           contentMargin.vertical,
           border.width,
           title.text,
-          title.textSize
+          title.textSize,
         );
 
   // Check for table height overflow
   if (tableHeight > availableHeight) {
     throw new DrawTableError(
       "ERR_TABLE_HEIGHT_OVERFLOW",
-      "Table height exceeds the available space on the page."
+      "Table height exceeds the available space on the page.",
+      {
+        width: tableWidth,
+        height: tableHeight,
+        endX: startX + tableWidth,
+        endY: startY - tableHeight,
+      },
     );
   }
 
@@ -245,7 +259,7 @@ export async function drawTable(
           lineHeight,
           contentMargin.horizontal,
           contentMargin.vertical,
-          border.width
+          border.width,
         ));
 
       const isHeader = rowIndex === 0 && header.hasHeaderRow;
@@ -285,7 +299,7 @@ export async function drawTable(
               cellX + columnWidth,
               cellY,
               border.width,
-              border.color
+              border.color,
             );
           }
 
@@ -297,7 +311,7 @@ export async function drawTable(
             cellX,
             cellY - rowHeight,
             border.width,
-            border.color
+            border.color,
           );
 
           // Draw right border of the cell if it's the last column
@@ -309,7 +323,7 @@ export async function drawTable(
               cellX + columnWidth,
               cellY - rowHeight,
               border.width,
-              border.color
+              border.color,
             );
           }
 
@@ -321,7 +335,7 @@ export async function drawTable(
             cellX + columnWidth,
             cellY - rowHeight,
             border.width,
-            border.color
+            border.color,
           );
         }
 
@@ -343,7 +357,7 @@ export async function drawTable(
               lineHeight,
               contentMargin.horizontal,
               contentMargin.vertical,
-              border.width
+              border.width,
             );
 
             mixedContentY -= contentHeight;
@@ -363,7 +377,7 @@ export async function drawTable(
             lineHeight,
             contentMargin.horizontal,
             contentMargin.vertical,
-            border.width
+            border.width,
           );
         }
 
@@ -374,7 +388,7 @@ export async function drawTable(
     } catch (error: any) {
       throw new DrawTableError(
         "DRAW_ROW_ERROR",
-        `Failed to draw at ROW-${rowIndex}: ${error.message}`
+        `Failed to draw at ROW-${rowIndex}: ${error.message}`,
       );
     }
   }
