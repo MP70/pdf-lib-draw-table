@@ -8,6 +8,7 @@
     "test:node": "jest --env=node",
     "test:jsdom": "jest --env=jsdom",
     "test": "jest --env=node && jest --env=jsdom",
+    "docs": "npx typedoc src/index.ts",
     "build": "tsc"
   },
   "repository": {
