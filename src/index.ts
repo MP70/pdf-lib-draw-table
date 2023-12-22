@@ -1,6 +1,8 @@
 // Import your helper functions and types
 import { drawTable } from "./drawPDFTable";
 import { generateColumnWidths } from "./helpers/columnWidths";
+import { calcTableHeight } from "./helpers/tableHeights";
+import { DrawTableError } from "./drawPDFTable";
 import {
   GenColumnWidthOptions,
   CellContent,
@@ -27,6 +29,7 @@ import {
 export {
   drawTable,
   generateColumnWidths,
+  calcTableHeight,
   GenColumnWidthOptions,
   CellContent,
   DrawTableOptions,
@@ -46,4 +49,5 @@ export {
   TitleOptions,
   ImageBase,
   LinkBase,
+  DrawTableError,
 };
