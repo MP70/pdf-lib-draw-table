@@ -30,16 +30,19 @@ import { setDefaults } from "./helpers/setDefaults";
 export class DrawTableError extends Error {
   code: string;
   dimensions?: Partial<TableDimensions>;
+  rowHeights?: number[];
 
   constructor(
     code: string,
     message: string,
     dimensions?: Partial<TableDimensions>,
+    rowHeights?: number[]
   ) {
     super(message);
     this.code = code;
     this.name = "DrawTableError";
     this.dimensions = dimensions;
+    this.rowHeights = rowHeights;
   }
 }
 
@@ -74,17 +77,17 @@ export async function drawTable(
   table: CellContent[][] | TableObject,
   startX: number,
   startY: number,
-  options?: TableOptionsDeepPartial<DrawTableOptions> | undefined,
+  options?: TableOptionsDeepPartial<DrawTableOptions> | undefined
 ): Promise<TableDimensions> {
   const embeddedFont = await doc.embedFont(StandardFonts.Helvetica);
   const embeddedTableTitleFont = await doc.embedFont(
-    StandardFonts.HelveticaBold,
+    StandardFonts.HelveticaBold
   );
   // Set defaults for all options
   const defaultOptions: DrawTableOptions = setDefaults(
     embeddedFont,
     embeddedTableTitleFont,
-    (options as TableOptionsDeepPartial<DrawTableOptions>) ?? {},
+    (options as TableOptionsDeepPartial<DrawTableOptions>) ?? {}
   );
   const {
     fillUndefCells,
@@ -115,7 +118,7 @@ export async function drawTable(
   } catch (error: any) {
     throw new DrawTableError(
       "ERR_CONVERT_VALIDATE",
-      `Error validating or converting table data:${error.message}`,
+      `Error validating or converting table data:${error.message}`
     );
   }
 
@@ -126,7 +129,7 @@ export async function drawTable(
   ) {
     throw new DrawTableError(
       "ERR_COLUMN_COUNT_MISMATCH",
-      "The number of columns in overrideWidths does not match the number of columns in the table.",
+      "The number of columns in overrideWidths does not match the number of columns in the table."
     );
   }
 
@@ -137,7 +140,7 @@ export async function drawTable(
   ) {
     throw new DrawTableError(
       "ERR_ROW_COUNT_MISMATCH",
-      "The number of rows in overrideHeights does not match the number of rows in the table.",
+      "The number of rows in overrideHeights does not match the number of rows in the table."
     );
   }
 
@@ -168,47 +171,46 @@ export async function drawTable(
   // Calculate table dimensions
   const tableWidth = columnWidths.reduce(
     (acc: number, cur: number) => acc + cur,
-    0,
+    0
   );
   // Check for table width overflow
   if (tableWidth > availableWidth) {
     throw new DrawTableError(
       "ERR_TABLE_WIDTH_OVERFLOW",
       "Table width exceeds the available space on the page.",
-      { width: tableWidth, endX: startX + tableWidth },
+      { width: tableWidth, endX: startX + tableWidth }
     );
   }
-  const tableHeight =
-    row.overrideHeights?.length > 0
-      ? row.overrideHeights.reduce((acc: number, cur: number) => acc + cur, 0)
-      : await calcTableHeight(
-          tableData,
-          columnWidths,
-          font,
-          textSize,
-          lineHeight,
-          header.hasHeaderRow,
-          header.hasHeaderRow ? header.font : font,
-          header.hasHeaderRow ? header.textSize ?? header.textSize : textSize,
-          lineHeight, // this is headerLineHeight (assuming same as above for now, here for future functonality.)
-          contentMargin.horizontal,
-          contentMargin.vertical,
-          border.width,
-          title.text,
-          title.textSize,
-        );
+  const tableHeightDetails = await calcTableHeight(
+    tableData,
+    columnWidths,
+    font,
+    textSize,
+    lineHeight,
+    header.hasHeaderRow,
+    header.hasHeaderRow ? header.font : font,
+    header.hasHeaderRow ? header.textSize ?? header.textSize : textSize,
+    lineHeight, // This is headerLineHeight
+    contentMargin.horizontal,
+    contentMargin.vertical,
+    border.width,
+    title.text,
+    title.textSize,
+    row.overrideHeights // This is the new parameter
+  );
 
   // Check for table height overflow
-  if (tableHeight > availableHeight) {
+  if (tableHeightDetails.totalHeight > availableHeight) {
     throw new DrawTableError(
       "ERR_TABLE_HEIGHT_OVERFLOW",
       "Table height exceeds the available space on the page.",
       {
         width: tableWidth,
-        height: tableHeight,
+        height: tableHeightDetails.totalHeight,
         endX: startX + tableWidth,
-        endY: startY - tableHeight,
+        endY: startY - tableHeightDetails.totalHeight,
       },
+      tableHeightDetails.rowHeights
     );
   }
 
@@ -259,7 +261,7 @@ export async function drawTable(
           lineHeight,
           contentMargin.horizontal,
           contentMargin.vertical,
-          border.width,
+          border.width
         ));
 
       const isHeader = rowIndex === 0 && header.hasHeaderRow;
@@ -274,22 +276,38 @@ export async function drawTable(
         const cellFontSize = isHeader ? header.textSize : textSize;
         // Determine alignment based on whether the cell is a header or not
         const alignment = isHeader ? header.contentAlignment : contentAlignment;
+        let backgroundColor;
 
-        // Draw cell background for header row
         if (isHeader) {
+          backgroundColor = header.backgroundColor; // Use the header's background color
+        } else {
+          // Adjust index for background color when there is a header row
+          // This setting is only for non header rows, so index 0 color will be row 0 in a no header table, and row 1 in a header table.
+          const adjustedRowIndex = header.hasHeaderRow
+            ? rowIndex - 1
+            : rowIndex;
+          backgroundColor =
+            row.backgroundColors &&
+            row.backgroundColors.length > adjustedRowIndex
+              ? row.backgroundColors[adjustedRowIndex]
+              : undefined;
+        }
+
+        // Draw cell background if specified
+        if (backgroundColor) {
           page.drawRectangle({
             x: cellX,
             y: cellY - rowHeight,
             width: columnWidth,
             height: rowHeight,
-            color: header.backgroundColor,
+            color: backgroundColor,
             borderWidth: border.width,
             borderColor: border.color,
           });
         }
 
         // Draw cell borders only if there is a positive border width, otherwise, we achieve borderless tables
-        if (border.width > 0) {
+        if (border.width > 0 && !backgroundColor) {
           // Draw top border of the cell if there is no header and it's the first row
           if (rowIndex === 0 && !header.hasHeaderRow) {
             drawBorder(
@@ -299,7 +317,7 @@ export async function drawTable(
               cellX + columnWidth,
               cellY,
               border.width,
-              border.color,
+              border.color
             );
           }
 
@@ -311,7 +329,7 @@ export async function drawTable(
             cellX,
             cellY - rowHeight,
             border.width,
-            border.color,
+            border.color
           );
 
           // Draw right border of the cell if it's the last column
@@ -323,7 +341,7 @@ export async function drawTable(
               cellX + columnWidth,
               cellY - rowHeight,
               border.width,
-              border.color,
+              border.color
             );
           }
 
@@ -335,7 +353,7 @@ export async function drawTable(
             cellX + columnWidth,
             cellY - rowHeight,
             border.width,
-            border.color,
+            border.color
           );
         }
 
@@ -357,7 +375,7 @@ export async function drawTable(
               lineHeight,
               contentMargin.horizontal,
               contentMargin.vertical,
-              border.width,
+              border.width
             );
 
             mixedContentY -= contentHeight;
@@ -377,7 +395,7 @@ export async function drawTable(
             lineHeight,
             contentMargin.horizontal,
             contentMargin.vertical,
-            border.width,
+            border.width
           );
         }
 
@@ -388,7 +406,7 @@ export async function drawTable(
     } catch (error: any) {
       throw new DrawTableError(
         "DRAW_ROW_ERROR",
-        `Failed to draw at ROW-${rowIndex}: ${error.message}`,
+        `Failed to draw at ROW-${rowIndex}: ${error.message}`
       );
     }
   }
@@ -401,8 +419,8 @@ export async function drawTable(
   // Return table dimensions and end x/y. Useful for consumer if they are writing other content to the PDF page after this.
   return {
     endX: startX + tableWidth,
-    endY: startY - tableHeight,
+    endY: startY - tableHeightDetails.totalHeight,
     width: tableWidth,
-    height: tableHeight,
+    height: tableHeightDetails.totalHeight,
   };
 }

@@ -1,10 +1,10 @@
 import { DrawTableOptions, TableOptionsDeepPartial } from "../../types";
-import { rgb, PDFFont } from "pdf-lib";
+import { rgb, PDFFont, Color } from "pdf-lib";
 
 export const setDefaults = (
   embeddedFont: PDFFont,
   embeddedTableTitleFont: PDFFont,
-  options: TableOptionsDeepPartial<DrawTableOptions>,
+  options: TableOptionsDeepPartial<DrawTableOptions>
 ): DrawTableOptions => {
   return {
     textSize: options.textSize ?? 14, // Set default text size or use provided value
@@ -21,14 +21,16 @@ export const setDefaults = (
       overrideWidths: (options.column?.overrideWidths as number[]) ?? [], // Set default overrideWidths or use provided value
     },
     row: {
+      backgroundColors: (options.row?.backgroundColors as Color[]) ?? [],
       overrideHeights: (options.row?.overrideHeights as number[]) ?? [], // Set default overrideHeights or use provided value
     },
     header: {
       hasHeaderRow: options.header?.hasHeaderRow ?? true, // Set default hasHeaderRow or use provided value
       font: options.header?.font ?? embeddedTableTitleFont, // Set default header font or use provided value
       textSize: options.header?.textSize ?? 14, // Set default header text size or use provided value
-      textColor: options.header?.textColor ?? rgb(0.996, 0.996, 0.996), // Set default header text color or use provided value
-      backgroundColor: options.header?.backgroundColor ?? rgb(0, 0.2, 0.4), // Set default header background color or use provided value
+      textColor: options.header?.textColor ?? rgb(0, 0, 0), // Set default header text color or use provided value
+      backgroundColor:
+        options.header?.backgroundColor ?? (undefined as unknown as Color), // Set default header background color or use provided value
       contentAlignment: options.header?.contentAlignment ?? "left", // Set default header content alignment or use provided value
     },
     title: {

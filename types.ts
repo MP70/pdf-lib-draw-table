@@ -151,6 +151,7 @@ export type ColumnOptions = {
 
 // Options related to row heights
 export interface RowOptions {
+  backgroundColors: (Color | undefined)[]; 
   overrideHeights: number[]; // If provided, these heights will be used for each row
 }
 
