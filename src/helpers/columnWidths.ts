@@ -3,11 +3,12 @@ import {
   GenColumnWidthOptions,
   CustomStyledText,
   Link,
+  ErrorCode,
 } from "../../types";
 import { PDFFont } from "pdf-lib";
 import { Image, CellElement } from "../../types";
 import { isImage, isLink } from "./util";
-import { DrawTableError } from "../drawPDFTable";
+import { createTableError } from "./errorFactory";
 
 /**
  * Get the width of the content based on its type.
@@ -110,9 +111,9 @@ export function generateColumnWidths(options: GenColumnWidthOptions): number[] {
     }
     if (columnWidthMode === "wrapHeader") {
       if (!hasHeader) {
-        throw new DrawTableError(
-          "ERR_WRAP_HEADER_INVALID",
-          `Failed to draw, wrap header not valid when no header set `,
+        throw createTableError(
+          ErrorCode.ERR_WRAP_HEADER_INVALID,
+          "Failed to draw, wrap header not valid when no header set",
         );
       }
       return headerWidths;
@@ -166,9 +167,9 @@ export function generateColumnWidths(options: GenColumnWidthOptions): number[] {
         if (headerTotalWidth >= availableWidth) {
           const scaleFactor = adjustedWidth / headerTotalWidth;
           if (scaleFactor < 0.9) {
-            throw new DrawTableError(
-              "ERR_NO_SPACE_FOR_HEADERS",
-              `Drawing this would require us to squish the headers too much (<90%). Please choose equal, give us more page width, or manually set col widths.`,
+            throw createTableError(
+              ErrorCode.ERR_NO_SPACE_FOR_HEADERS,
+              "Drawing this would require us to squish the headers too much (<90%). Please choose equal, give us more page width, or manually set col widths.",
             );
           }
           columnWidths = columnWidths.map((width, index) =>
@@ -202,8 +203,8 @@ export function generateColumnWidths(options: GenColumnWidthOptions): number[] {
       return columnWidths;
     }
   } else {
-    throw new DrawTableError(
-      "ERR_INVALID_DISTRIBUTE_MODE",
+    throw createTableError(
+      ErrorCode.ERR_INVALID_DISTRIBUTE_MODE,
       'Invalid distribute mode. Choose "auto", "wrapHeader" or "equal".',
     );
   }

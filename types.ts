@@ -13,11 +13,23 @@ import {
 // Alignment options for text elements
 export type Alignment = "left" | "center" | "right";
 
-//Currently internal only, nor exposed to the user. 
+//Currently internal only, nor exposed to the user.
 //Optimal mode will come in a future release, as it needs a bit more testing. May also add a "none" mode.
 export enum BreakWordMode {
   Essential = "essential", //DEFAULT ON
   Optimal = "optimal",
+}
+
+export enum ErrorCode {
+  ERR_CONVERT_VALIDATE, // Error when data validation or conversion fails
+  ERR_COLUMN_COUNT_MISMATCH, // Error when the column count does not match expected values
+  ERR_ROW_COUNT_MISMATCH, // Error when the row count does not match expected values
+  ERR_TABLE_WIDTH_OVERFLOW, // Error when table width exceeds available space
+  ERR_TABLE_HEIGHT_OVERFLOW, // Error when table height exceeds available space
+  DRAW_ROW_ERROR, // Error when a row fails to draw correctly
+  ERR_WRAP_HEADER_INVALID, // Indicates invalid usage of wrapHeader without a header
+  ERR_NO_SPACE_FOR_HEADERS, // Indicates insufficient space for headers
+  ERR_INVALID_DISTRIBUTE_MODE, // Indicates an invalid column width distribution mode
 }
 
 // Options for distributing column widths in the table
@@ -107,12 +119,12 @@ export type TableOptionsDeepPartial<T> = {
   [K in keyof T]?: T[K] extends (...args: any[]) => any
     ? T[K] | undefined
     : T[K] extends Color
-    ? T[K] | undefined
-    : T[K] extends PDFFont
-    ? T[K] | undefined
-    : T[K] extends object
-    ? TableOptionsDeepPartial<T[K]>
-    : T[K];
+      ? T[K] | undefined
+      : T[K] extends PDFFont
+        ? T[K] | undefined
+        : T[K] extends object
+          ? TableOptionsDeepPartial<T[K]>
+          : T[K];
 };
 
 // Basic options for the table, including font, colors, and alignment

@@ -2,7 +2,7 @@
 import { drawTable } from "./drawPDFTable";
 import { generateColumnWidths } from "./helpers/columnWidths";
 import { calcTableHeight } from "./helpers/tableHeights";
-import { DrawTableError } from "./drawPDFTable";
+import { DrawTableError } from "./helpers/errorFactory";
 import {
   GenColumnWidthOptions,
   CellContent,
@@ -23,6 +23,7 @@ import {
   TitleOptions,
   ImageBase,
   LinkBase,
+  ErrorCode,
 } from "../types";
 
 // Export your functions and types
@@ -50,4 +51,5 @@ export {
   ImageBase,
   LinkBase,
   DrawTableError,
+  ErrorCode,
 };

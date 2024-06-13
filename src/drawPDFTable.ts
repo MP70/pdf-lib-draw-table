@@ -15,37 +15,20 @@ import {
   // endMarkedContent
 } from "./helpers/markContent";
 import { generateColumnWidths } from "./helpers/columnWidths";
-import validateAndConvertTableData from "./helpers/validateAndConvert"; // Adjust the path as needed
+import validateAndConvertTableData from "./helpers/validateAndConvert";
 
 import { drawElement } from "./helpers/drawContent";
 import {
   CellContent,
   DrawTableOptions,
+  ErrorCode,
   TableDimensions,
   TableObject,
   TableOptionsDeepPartial,
 } from "../types";
 import { calcTableHeight, calcRowHeight } from "./helpers/tableHeights";
 import { setDefaults } from "./helpers/setDefaults";
-export class DrawTableError extends Error {
-  code: string;
-  dimensions?: Partial<TableDimensions>;
-  rowHeights?: number[];
-
-  constructor(
-    code: string,
-    message: string,
-    dimensions?: Partial<TableDimensions>,
-    rowHeights?: number[]
-  ) {
-    super(message);
-    this.code = code;
-    this.name = "DrawTableError";
-    this.dimensions = dimensions;
-    this.rowHeights = rowHeights;
-  }
-}
-
+import { createTableError } from "./helpers/errorFactory";
 /**
  * Draws a table on the provided PDF document page.
  *
@@ -116,9 +99,9 @@ export async function drawTable(
       fillEmpty: fillUndefCells,
     });
   } catch (error: any) {
-    throw new DrawTableError(
-      "ERR_CONVERT_VALIDATE",
-      `Error validating or converting table data:${error.message}`
+    throw createTableError(
+      ErrorCode.ERR_CONVERT_VALIDATE,
+      `Error validating or converting table data: ${error.message}`,
     );
   }
 
@@ -127,9 +110,9 @@ export async function drawTable(
     column.overrideWidths.length > 0 &&
     column.overrideWidths.length !== tableData[0].length
   ) {
-    throw new DrawTableError(
-      "ERR_COLUMN_COUNT_MISMATCH",
-      "The number of columns in overrideWidths does not match the number of columns in the table."
+    throw createTableError(
+      ErrorCode.ERR_COLUMN_COUNT_MISMATCH,
+      "The number of columns in overrideWidths does not match the number of columns in the table.",
     );
   }
 
@@ -138,9 +121,9 @@ export async function drawTable(
     row?.overrideHeights?.length > 0 &&
     row.overrideHeights?.length !== tableData.length
   ) {
-    throw new DrawTableError(
-      "ERR_ROW_COUNT_MISMATCH",
-      "The number of rows in overrideHeights does not match the number of rows in the table."
+    throw createTableError(
+      ErrorCode.ERR_ROW_COUNT_MISMATCH,
+      "The number of rows in overrideHeights does not match the number of rows in the table.",
     );
   }
 
@@ -175,8 +158,8 @@ export async function drawTable(
   );
   // Check for table width overflow
   if (tableWidth > availableWidth) {
-    throw new DrawTableError(
-      "ERR_TABLE_WIDTH_OVERFLOW",
+    throw createTableError(
+      ErrorCode.ERR_TABLE_WIDTH_OVERFLOW,
       "Table width exceeds the available space on the page.",
       { width: tableWidth, endX: startX + tableWidth }
     );
@@ -196,13 +179,13 @@ export async function drawTable(
     border.width,
     title.text,
     title.textSize,
-    row.overrideHeights // This is the new parameter
+    row.overrideHeights 
   );
 
   // Check for table height overflow
   if (tableHeightDetails.totalHeight > availableHeight) {
-    throw new DrawTableError(
-      "ERR_TABLE_HEIGHT_OVERFLOW",
+    throw createTableError(
+      ErrorCode.ERR_TABLE_HEIGHT_OVERFLOW,
       "Table height exceeds the available space on the page.",
       {
         width: tableWidth,
@@ -404,9 +387,9 @@ export async function drawTable(
 
       currentY -= rowHeight;
     } catch (error: any) {
-      throw new DrawTableError(
-        "DRAW_ROW_ERROR",
-        `Failed to draw at ROW-${rowIndex}: ${error.message}`
+      throw createTableError(
+        ErrorCode.DRAW_ROW_ERROR,
+        `Failed to draw at ROW-${rowIndex}: ${error.message}`,
       );
     }
   }
