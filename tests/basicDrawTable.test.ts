@@ -1,5 +1,5 @@
 import { PDFDocument, PDFPage, rgb } from "pdf-lib";
-import { drawTable, DrawTableError } from "../src/drawPDFTable";
+import { drawTable } from "../src/drawPDFTable";
 
 describe("drawTable", () => {
   let doc: PDFDocument;
@@ -31,7 +31,7 @@ describe("drawTable", () => {
     } catch (err: any) {
       expect(err).toBeInstanceOf(Error);
       expect(err.message).toBe(
-        "Table width exceeds the available space on the page."
+        "Table width exceeds the available space on the page.",
       );
     }
   });
@@ -59,7 +59,7 @@ describe("drawTable", () => {
     } catch (err: any) {
       expect(err).toBeInstanceOf(Error);
       expect(err.message).toBe(
-        "Table height exceeds the available space on the page."
+        "Table height exceeds the available space on the page.",
       );
     }
   });
@@ -89,7 +89,7 @@ describe("drawTable", () => {
       tableData,
       50,
       700,
-      options
+      options,
     );
 
     expect(tableDimensions).toBeDefined();
